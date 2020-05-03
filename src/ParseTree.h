@@ -1,6 +1,8 @@
 #ifndef SQLIKE_PARSETREE_H
 #define SQLIKE_PARSETREE_H
 
+#include <string>
+
 // these are the different types of operators that can appear in a CNF expression
 #define LESS_THAN 1
 #define GREATER_THAN 2
@@ -17,7 +19,7 @@ struct Operand {
     int code;
 
     // this is the actual operand
-    char *value;
+    string value;
 };
 
 struct ComparisonOp {
