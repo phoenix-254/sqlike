@@ -5,10 +5,10 @@
 
 #include "Schema.h"
 
-Type Schema::GetType(string attrStr) {
-    if (attrStr.compare("Int") == 0) return Int;
-    else if (attrStr.compare("Double") == 0) return Double;
-    else if (attrStr.compare("String") == 0) return String;
+Type Schema::GetType(const string& attrStr) {
+    if (attrStr == "Int") return Int;
+    else if (attrStr == "Double") return Double;
+    else if (attrStr == "String") return String;
     else {
         cout << "Invalid type : " << attrStr  << endl;
         exit(1);
@@ -22,26 +22,23 @@ string Schema::GetTypeStr(Type type) {
     else return "Invalid";
 }
 
-Schema::Schema(string fileName, string relationName) {
-    cout << fileName << ", " << relationName << endl;
-
-    ifstream file;
-    file.open(fileName);
+Schema::Schema(const string& fileName, const string& relationName) {
+    ifstream file(fileName);
 
     if (file.is_open()) {
         string line;
         while (getline(file, line)) {
-            if (line.compare("BEGIN") == 0) {
+            if (line == "BEGIN") {
                 // Move to next line and read relation name.
                 getline(file, line);
                 this->fileName = line;
 
                 // Check if line equal to the relation name.
-                if (line.compare(relationName) == 0) {
+                if (line == relationName) {
                     // Skip a line containing relation file name
                     getline(file, line);
 
-                    while (getline(file, line) && line.compare("END") != 0) {
+                    while (getline(file, line) && line != "END") {
                         // Make attribute from a string e.g "r_regionkey Int"
                         istringstream buf(line);
                         istream_iterator<string> beg(buf), end;
@@ -74,9 +71,9 @@ Schema::~Schema() {
     attrs.clear();
 }
 
-int Schema::FindIndex(string attrName) {
+int Schema::FindIndex(const string& attrName) {
     for (int index = 0; index < attrs.size(); index++) {
-        if (attrName.compare(attrs[index].name)) {
+        if (attrName == (attrs[index].name)) {
             return index;
         }
     }
@@ -85,10 +82,10 @@ int Schema::FindIndex(string attrName) {
     return -1;
 }
 
-Type Schema::FindType(string attrName) {
-    for (int index = 0; index < attrs.size(); index++) {
-        if (attrName.compare(attrs[index].name)) {
-            return attrs[index].type;
+Type Schema::FindType(const string& attrName) {
+    for (auto & attr : attrs) {
+        if (attrName == (attr.name)) {
+            return attr.type;
         }
     }
 
@@ -109,7 +106,7 @@ string Schema::GetFileName() {
 }
 
 void Schema::Print() {
-    for (int index = 0; index < attrs.size(); index++) {
-        cout << attrs[index].name << " " << GetTypeStr(attrs[index].type) << endl;
+    for (auto & attr : attrs) {
+        cout << attr.name << " " << GetTypeStr(attr.type) << endl;
     }
 }

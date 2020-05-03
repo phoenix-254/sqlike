@@ -19,17 +19,17 @@ private:
 
     string fileName;
 
-    Type GetType(string attrStr);
-    string GetTypeStr(Type type);
+    static Type GetType(const string& attrStr);
+    static string GetTypeStr(Type type);
 
 public:
-    Schema(string fileName, string relationName);
+    Schema(const string& fileName, const string& relationName);
 
     ~Schema();
 
-    int FindIndex(string attrName);
+    int FindIndex(const string& attrName);
 
-    Type FindType(string attrName);
+    Type FindType(const string& attrName);
 
     // Getter Functions - START.
     int GetAttributeCount();
