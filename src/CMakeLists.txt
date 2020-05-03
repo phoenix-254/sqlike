@@ -3,4 +3,4 @@ project(sqlike)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(sqlike main.cpp)
+add_executable(sqlike main.cpp Schema.cpp Record.cpp)
