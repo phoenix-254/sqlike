@@ -10,10 +10,7 @@ class Record {
 private:
     char *bits;
 
-    char* GetBits();
-
     void SetBits(char *bits);
-    void CopyBits(char *src, int len);
 
     void Clear();
 
@@ -23,6 +20,10 @@ public:
     Record();
 
     ~Record();
+
+    char* GetBits();
+
+    void CopyBits(char *src, int len);
 
     /*
      * Copies the given record in to current record and deletes consumeMe after this.
@@ -48,14 +49,14 @@ public:
      * numAttrsToKeep - number of attributes to keep
      * numAttrsNow - number of attributes currently in the record
      */
-    void Project(int *attrsToKeep, int numAttrsToKeep, int numAttrsNow);
+    void Project(const int *attrsToKeep, int numAttrsToKeep, int numAttrsNow);
 
     /*
      * Creates a new record by merging the two records given in the parameters.
      * Useful for join operation.
      */
     void MergeRecords(Record *left, Record *right, int numAttrsLeft, int numAttrsRight,
-            int *attrsToKeep, int numAttrsToKeep, int startOfRight);
+            const int *attrsToKeep, int numAttrsToKeep, int startOfRight);
 
     // Prints the contents of the current record.
     void Print(Schema &schema);

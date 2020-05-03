@@ -135,7 +135,7 @@ int Record::SuckNextRecord(Schema &schema, FILE *file) {
     return 1;
 }
 
-void Record::Project(int *attrsToKeep, int numAttrsToKeep, int numAttrsNow) {
+void Record::Project(const int *attrsToKeep, int numAttrsToKeep, int numAttrsNow) {
     // Figure out the required size for the new record.
     int requiredSize = sizeof(int) * (numAttrsToKeep + 1);
     for (int index = 0; index < numAttrsToKeep; index++) {
@@ -185,7 +185,7 @@ void Record::Project(int *attrsToKeep, int numAttrsToKeep, int numAttrsNow) {
 }
 
 void Record::MergeRecords(Record *left, Record *right, int numAttrsLeft, int numAttrsRight,
-        int *attrsToKeep, int numAttrsToKeep, int startOfRight) {
+        const int *attrsToKeep, int numAttrsToKeep, int startOfRight) {
     Clear();
 
     // If one of the records is empty, new record is simply the other non-empty record.
