@@ -6,7 +6,8 @@ class TwoWayList {
 private:
     struct Node {
         // data
-        Type *data, *next, *previous;
+        Type *data;
+        Node *next, *previous;
 
         // constructor
         Node() : data(0), next(0), previous(0) {}
