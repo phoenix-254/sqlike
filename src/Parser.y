@@ -83,8 +83,7 @@ OrList: Condition OR OrList
 	$$ = (struct OrList *) malloc (sizeof (struct OrList));
 	$$->left = $1;
 	$$->rightOr = NULL;
-}
-;
+};
 
 Condition: Literal Op Literal 
 {
@@ -92,8 +91,7 @@ Condition: Literal Op Literal
 	$$ = $2;
 	$$->left = $1;
 	$$->right = $3;
-}
-;
+};
 
 Op: '<' 
 {
@@ -112,8 +110,7 @@ Op: '<'
 	// construct and send up the comparison
 	$$ = (struct ComparisonOp *) malloc (sizeof (struct ComparisonOp));
 	$$->code = EQUALS;
-}  
-;
+};
 
 Literal : String 
 {
@@ -142,7 +139,6 @@ Literal : String
 	$$ = (struct Operand *) malloc (sizeof (struct Operand));
 	$$->code = NAME;
 	$$->value = $1;
-}
-;
+};
 
 %%

@@ -37,6 +37,7 @@
 # Build files
 cmake-build-debug/*
 src/cmake-build-debug/*
+src/build/*
 
 # 1GB tbl files
 files/1gb/*
