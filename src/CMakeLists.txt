@@ -23,6 +23,7 @@ add_executable(sqlike
         ComparisonEngine.cpp
         Page.cpp
         File.cpp
+        DBFile.cpp
         ${BISON_Parser_OUTPUTS}
         ${FLEX_Scanner_OUTPUTS}
         )
