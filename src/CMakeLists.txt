@@ -20,6 +20,7 @@ add_executable(sqlike
         Schema.cpp
         Record.cpp
         Comparison.cpp
+        ComparisonEngine.cpp
         Page.cpp
         File.cpp
         ${BISON_Parser_OUTPUTS}

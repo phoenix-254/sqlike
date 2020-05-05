@@ -2,12 +2,12 @@
 #define SQLIKE_COMPARISON_H
 
 #include "Const.h"
-#include "ComparisonEngine.h"
 #include "ParseTree.h"
 #include "Record.h"
 #include "Schema.h"
 
 class Comparison {
+public:
     int whichAttr1, whichAttr2;
     Target operand1, operand2;
 
@@ -15,9 +15,6 @@ class Comparison {
 
     CompOperator compOp;
 
-    friend class CNF;
-
-public:
     Comparison() = default;
 
     Comparison(const Comparison &copyMe);
@@ -27,14 +24,12 @@ public:
 
 // This structure encapsulates a sort order for records
 class OrderMaker {
+public:
     int numberOfAttrs;
 
     int whichAttrs[MAX_ANDS];
     Type whichTypes[MAX_ANDS];
 
-    friend class CNF;
-
-public:
     OrderMaker();
 
     // Creates an OrderMaker that can be used to sort the records based upon all of their attributes.
@@ -44,13 +39,13 @@ public:
 };
 
 class CNF {
+public:
     Comparison orList[MAX_ANDS][MAX_ORS];
 
     int orLens[MAX_ANDS];
 
     int numberOfAnds;
 
-public:
     /*
      * Returns an instance of the OrderMaker class that allows the CNF to be implemented using a
      * sort-based algorithm such as sort-merge-join.
