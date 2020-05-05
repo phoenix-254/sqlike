@@ -24,6 +24,4 @@ enum Type {
     String
 };
 
-unsigned int Random_Generate();
-
 #endif //SQLIKE_CONST_H
