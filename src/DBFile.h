@@ -16,6 +16,11 @@ class DBFile {
 private:
     File *file;
 
+    Page *readPage, *writePage;
+    off_t readIndex, writeIndex;
+
+    void WriteToFile();
+
 public:
     DBFile();
 

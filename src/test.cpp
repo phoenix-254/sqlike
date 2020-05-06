@@ -9,8 +9,8 @@ void LoadTest() {
     cout << endl << ">>>> Loading " << rel->GetRelationName() << endl;
 
     DBFile dbFile;
-    dbFile.Load(*(rel->GetSchema()), rel->GetTblFilePath());
     dbFile.Create(rel->GetBinFilePath().c_str(), HEAP, nullptr);
+    dbFile.Load(*(rel->GetSchema()), rel->GetTblFilePath().c_str());
     dbFile.Close();
 }
 
@@ -80,7 +80,7 @@ int main() {
 
     int tableIndex = 0;
     while (tableIndex < 1 || tableIndex > 8) {
-        cout << ">>>> Select Table" << endl;
+        cout << ">>>> Select Table: " << endl;
         for (auto & t : TABLE_MAP) {
             cout << "\t" << t.first << ". " << t.second << endl;
         }
@@ -96,7 +96,7 @@ int main() {
     // what user has selected.
     void (*test) ();
     void (*testPtr[]) () = {&LoadTest, &ScanTest, &ScanAndFilterTest};
-    // As array index starts from 0, and not 1.
+    // As array index starts from 0, hence deducted 1.
     test = testPtr[testToRun - 1];
     test();
 
