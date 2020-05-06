@@ -15,7 +15,7 @@ void File::Open(int mode, const char *fileName) {
     if (mode == 0) openMode = O_TRUNC | O_RDWR | O_CREAT;
     else openMode = O_RDWR;
 
-    fileDescriptor = open(fileName, mode, S_IRUSR | S_IWUSR);
+    fileDescriptor = open(fileName, openMode, S_IRUSR | S_IWUSR);
     if (fileDescriptor < 0) {
         cerr << "BAD!  Open did not work for " << fileName << endl;
         exit(1);

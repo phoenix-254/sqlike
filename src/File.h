@@ -8,7 +8,7 @@ class File {
 private:
     int fileDescriptor;
 
-    // Length of the file, in terms if number of pages.
+    // Length of the file, in terms of the number of pages.
     off_t currLength;
 
 public:

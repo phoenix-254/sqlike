@@ -27,15 +27,17 @@ public:
         return relationName;
     }
 
-    const char* GetBinFilePath() {
-        char binFilePath[100];
-        sprintf(binFilePath, "%s%s.bin", BIN_FILES_PATH, relationName);
+    string GetBinFilePath() {
+        string binFilePath(BIN_FILES_PATH);
+        binFilePath.append(relationName);
+        binFilePath.append(".bin");
         return binFilePath;
     }
 
-    const char* GetTblFilePath() {
-        char tblFilePath[100];
-        sprintf(tblFilePath, "%s%s.tbl", TBL_FILES_PATH, relationName);
+    string GetTblFilePath() {
+        string tblFilePath(TBL_FILES_PATH);
+        tblFilePath.append(relationName);
+        tblFilePath.append(".tbl");
         return tblFilePath;
     }
 

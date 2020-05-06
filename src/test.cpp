@@ -9,8 +9,8 @@ void LoadTest() {
     cout << endl << ">>>> Loading " << rel->GetRelationName() << endl;
 
     DBFile dbFile;
-    dbFile.Create(rel->GetBinFilePath(), HEAP, nullptr);
     dbFile.Load(*(rel->GetSchema()), rel->GetTblFilePath());
+    dbFile.Create(rel->GetBinFilePath().c_str(), HEAP, nullptr);
     dbFile.Close();
 }
 
@@ -18,7 +18,7 @@ void ScanTest() {
     cout << endl << ">>>> Scanning " << rel->GetRelationName() << endl;
 
     DBFile dbFile;
-    dbFile.Open(rel->GetBinFilePath());
+    dbFile.Open(rel->GetBinFilePath().c_str());
     dbFile.MoveFirst();
 
     Record temp;
@@ -45,7 +45,7 @@ void ScanAndFilterTest() {
     cnf.Print();
 
     DBFile dbFile;
-    dbFile.Open(rel->GetBinFilePath());
+    dbFile.Open(rel->GetBinFilePath().c_str());
     dbFile.MoveFirst();
 
     Record temp;

@@ -2,6 +2,7 @@
 #define SQLIKE_DBFILE_H
 
 #include "Comparison.h"
+#include "File.h"
 #include "Record.h"
 #include "Schema.h"
 
@@ -12,6 +13,9 @@ typedef enum {
 } fileType;
 
 class DBFile {
+private:
+    File *file;
+
 public:
     DBFile();
 

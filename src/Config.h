@@ -7,24 +7,24 @@
 using namespace std;
 
 /*
- * Path information relative to the root directory "sqlike"
- * from where the commands are executed.
+ * All the paths are relative to the build directory from where our executable resides.
+ * This is from where the commands are executed.
  */
 
 // Path to the catalog file.
-const char *CATALOG_FILE_PATH = "files/catalog";
+const char *CATALOG_FILE_PATH = "../files/catalog";
 
 /*
  * This directory contains the *.tbl files generated through tpch.
  * Change to "files/1gb" when you need to work with 1gb tbl files.
  */
-const char *TBL_FILES_PATH = "files/10mb/";
+const char *TBL_FILES_PATH = "../files/10mb/";
 
 /*
  * This is the directory where you generated bin files should go to.
  * Change to "bin/1gb" when you need to work with 1gb bin files.
  */
-const char *BIN_FILES_PATH = "bin/10mb/";
+const char *BIN_FILES_PATH = "../bin/10mb/";
 
 // Tables.
 const char *TBL_REGION = "region";
