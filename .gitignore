@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+# CLion
+.idea/*
+
+# Build files
+build/*
+
+# 1GB tbl files
+files/1gb/*
+
+# bin files
+bin/*
