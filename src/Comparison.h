@@ -1,6 +1,8 @@
 #ifndef SQLIKE_COMPARISON_H
 #define SQLIKE_COMPARISON_H
 
+#include <string>
+
 #include "Const.h"
 #include "ParseTree.h"
 #include "Record.h"
@@ -9,6 +11,7 @@
 class Comparison {
 public:
     int whichAttr1, whichAttr2;
+    string whichAttrVal1, whichAttrVal2;
     Target operand1, operand2;
 
     Type attrType;
@@ -20,6 +23,8 @@ public:
     Comparison(const Comparison &copyMe);
 
     void Print();
+
+    void PrintStr();
 };
 
 // This structure encapsulates a sort order for records

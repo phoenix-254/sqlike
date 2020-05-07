@@ -8,6 +8,9 @@ Comparison::Comparison(const Comparison &copyMe) {
     whichAttr1 = copyMe.whichAttr1;
     whichAttr2 = copyMe.whichAttr2;
 
+    whichAttrVal1 = copyMe.whichAttrVal1;
+    whichAttrVal2 = copyMe.whichAttrVal2;
+
     operand1 = copyMe.operand1;
     operand2 = copyMe.operand2;
 
@@ -36,6 +39,14 @@ void Comparison::Print() {
     if (attrType == Int) cout << " (Int)";
     else if (attrType == Double) cout << " (Double)";
     else cout << " (String)";
+}
+
+void Comparison::PrintStr() {
+    cout << whichAttrVal1;
+    if (compOp == LessThan) cout << " < ";
+    else if (compOp == GreaterThan) cout << " > ";
+    else cout << " = ";
+    cout << whichAttrVal2;
 }
 
 OrderMaker::OrderMaker() : numberOfAttrs(0) {}
@@ -175,6 +186,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &schema, Record &literal)
                 if (index != -1) {
                     cnf.orList[whichAnd][whichOr].operand1 = Left;
                     cnf.orList[whichAnd][whichOr].whichAttr1 = index;
+                    cnf.orList[whichAnd][whichOr].whichAttrVal1 = tempOr->left->left->value;
                     typeLeft = schema.FindType(tempOr->left->left->value);
                 }
                 else {
@@ -185,6 +197,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &schema, Record &literal)
             else if (tempOr->left->left->code == STRING) {
                 cnf.orList[whichAnd][whichOr].operand1 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr1 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal1 = tempOr->left->left->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                         tempOr->left->left->value, String);
                 typeLeft = String;
@@ -192,6 +205,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &schema, Record &literal)
             else if (tempOr->left->left->code == DOUBLE) {
                 cnf.orList[whichAnd][whichOr].operand1 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr1 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal1 = tempOr->left->left->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->left->value, Double);
                 typeLeft = Double;
@@ -199,6 +213,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &schema, Record &literal)
             else if (tempOr->left->left->code == INT) {
                 cnf.orList[whichAnd][whichOr].operand1 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr1 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal1 = tempOr->left->left->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->left->value, Int);
                 typeLeft = Int;
@@ -214,6 +229,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &schema, Record &literal)
                 if (index != -1) {
                     cnf.orList[whichAnd][whichOr].operand2 = Left;
                     cnf.orList[whichAnd][whichOr].whichAttr2 = index;
+                    cnf.orList[whichAnd][whichOr].whichAttrVal2 = tempOr->left->right->value;
                     typeRight = schema.FindType(tempOr->left->right->value);
                 }
                 else {
@@ -224,6 +240,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &schema, Record &literal)
             else if (tempOr->left->right->code == STRING) {
                 cnf.orList[whichAnd][whichOr].operand2 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr2 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal2 = tempOr->left->right->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->right->value, String);
                 typeRight = String;
@@ -231,6 +248,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &schema, Record &literal)
             else if (tempOr->left->right->code == DOUBLE) {
                 cnf.orList[whichAnd][whichOr].operand2 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr2 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal2 = tempOr->left->right->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->right->value, Double);
                 typeRight = Double;
@@ -238,6 +256,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &schema, Record &literal)
             else if (tempOr->left->right->code == INT) {
                 cnf.orList[whichAnd][whichOr].operand2 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr2 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal2 = tempOr->left->right->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->right->value, Int);
                 typeRight = Int;
@@ -326,12 +345,14 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &left, Schema &right, Rec
                     cnf.orList[whichAnd][whichOr].operand1 = Left;
                     cnf.orList[whichAnd][whichOr].whichAttr1 =
                             left.FindIndex(tempOr->left->left->value);
+                    cnf.orList[whichAnd][whichOr].whichAttrVal1 = tempOr->left->left->value;
                     typeLeft = left.FindType(tempOr->left->left->value);
                 }
                 else if (right.FindIndex(tempOr->left->left->value) != -1) {
                     cnf.orList[whichAnd][whichOr].operand1 = Right;
                     cnf.orList[whichAnd][whichOr].whichAttr1 =
                             right.FindIndex(tempOr->left->left->value);
+                    cnf.orList[whichAnd][whichOr].whichAttrVal1 = tempOr->left->left->value;
                     typeLeft = right.FindType(tempOr->left->left->value);
                 }
                 else {
@@ -342,6 +363,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &left, Schema &right, Rec
             else if (tempOr->left->left->code == STRING) {
                 cnf.orList[whichAnd][whichOr].operand1 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr1 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal1 = tempOr->left->left->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->left->value, String);
                 typeLeft = String;
@@ -349,6 +371,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &left, Schema &right, Rec
             else if (tempOr->left->left->code == DOUBLE) {
                 cnf.orList[whichAnd][whichOr].operand1 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr1 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal1 = tempOr->left->left->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->left->value, Double);
                 typeLeft = Double;
@@ -356,6 +379,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &left, Schema &right, Rec
             else if (tempOr->left->left->code == INT) {
                 cnf.orList[whichAnd][whichOr].operand1 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr1 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal1 = tempOr->left->left->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->left->value, Int);
                 typeLeft = Int;
@@ -371,12 +395,14 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &left, Schema &right, Rec
                     cnf.orList[whichAnd][whichOr].operand2 = Left;
                     cnf.orList[whichAnd][whichOr].whichAttr2 =
                             left.FindIndex(tempOr->left->right->value);
+                    cnf.orList[whichAnd][whichOr].whichAttrVal2 = tempOr->left->right->value;
                     typeRight = left.FindType(tempOr->left->right->value);
                 }
                 else if (right.FindIndex(tempOr->left->right->value) != -1) {
                     cnf.orList[whichAnd][whichOr].operand2 = Right;
                     cnf.orList[whichAnd][whichOr].whichAttr2 =
                             right.FindIndex(tempOr->left->right->value);
+                    cnf.orList[whichAnd][whichOr].whichAttrVal2 = tempOr->left->right->value;
                     typeRight = right.FindType(tempOr->left->right->value);
                 }
                 else {
@@ -387,6 +413,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &left, Schema &right, Rec
             else if (tempOr->left->right->code == STRING) {
                 cnf.orList[whichAnd][whichOr].operand2 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr2 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal2 = tempOr->left->right->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->right->value, String);
                 typeRight = String;
@@ -394,6 +421,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &left, Schema &right, Rec
             else if (tempOr->left->right->code == DOUBLE) {
                 cnf.orList[whichAnd][whichOr].operand2 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr2 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal2 = tempOr->left->right->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->right->value, Double);
                 typeRight = Double;
@@ -401,6 +429,7 @@ void CNF::GrowFromParseTree(AndList *parseTree, Schema &left, Schema &right, Rec
             else if (tempOr->left->right->code == INT) {
                 cnf.orList[whichAnd][whichOr].operand2 = Literal;
                 cnf.orList[whichAnd][whichOr].whichAttr2 = numberOfFieldsInLiteral;
+                cnf.orList[whichAnd][whichOr].whichAttrVal2 = tempOr->left->right->value;
                 AddLiteralToFile(numberOfFieldsInLiteral, outputRecFile, outputSchemaFile,
                                  tempOr->left->right->value, Int);
                 typeRight = Int;
@@ -467,12 +496,12 @@ void CNF::Print() {
     for (int i = 0; i < numberOfAnds; i++) {
         cout << "(";
         for (int j = 0; j < orLens[i]; j++) {
-            orList[i][j].Print();
+            orList[i][j].PrintStr();
             if (j < orLens[i] - 1) cout << " OR ";
         }
         cout << ") ";
 
-        if (i < numberOfAnds - 1) cout << " AND " << endl;
+        if (i < numberOfAnds - 1) cout << " AND ";
         else cout << endl;
     }
 }
