@@ -7,7 +7,7 @@
 using namespace std;
 
 void DBFile::WriteToFile() {
-    file->AddPage(writePage, writeIndex++);
+    file->AddPage(writePage, writePtr++);
     writePage->EmptyItOut();
 }
 
@@ -15,7 +15,7 @@ DBFile::DBFile() {
     file = new File();
     readPage = new Page();
     writePage = new Page();
-    readIndex = writeIndex = 1;
+    readPtr = writePtr = 1;
 }
 
 DBFile::~DBFile() {
@@ -26,6 +26,9 @@ DBFile::~DBFile() {
 
 int DBFile::Create(const char *filePath, fileType type, void *startUp) {
     if (filePath == nullptr || type < HEAP || type > TREE) return 0;
+
+    // Reset read and write pointers.
+    readPtr = writePtr = 1;
 
     // Create bin file.
     file->Open(0, filePath);
@@ -45,21 +48,32 @@ int DBFile::Create(const char *filePath, fileType type, void *startUp) {
     return 1;
 }
 
-int DBFile::Open(const char *filePath) {}
+int DBFile::Open(const char *filePath) {
+    if (filePath == nullptr) return 0;
+
+    readPtr = 1;
+
+    // Opens bin file.
+    file->Open(1, filePath);
+    return 1;
+}
 
 int DBFile::Close() {
+    // Write off the last page.
+    if (writePage->GetNumberOfRecs() > 0) WriteToFile();
     return file->Close();
 }
 
 void DBFile::Load(Schema &schema, const char *loadPath) {
-    int numOfRecs = 0;
+    int count = 0;
 
     FILE *tblFile = fopen(loadPath, "r");
     if (tblFile != nullptr) {
+        // Read all the records from the tbl file and add it to our page object one by one.
         Record next;
         while (next.SuckNextRecord(schema, tblFile)) {
             Add(next);
-            numOfRecs++;
+            count++;
         }
         fclose(tblFile);
     }
@@ -68,12 +82,16 @@ void DBFile::Load(Schema &schema, const char *loadPath) {
         exit(1);
     }
 
-    cout << "Loaded " << numOfRecs << " from " << loadPath << "!" << endl;
+    cout << "Loaded " << count << " records from " << loadPath << "!" << endl;
 }
 
 void DBFile::MoveFirst() {}
 
 void DBFile::Add(Record &addMe) {
+    /*
+     * Check if there's enough space left on this page.
+     * If not, write this page to the file, empty the page and add this record to it, Else do nothing.
+     */
     if (!writePage->Append(&addMe)) {
         WriteToFile();
         writePage->Append(&addMe);

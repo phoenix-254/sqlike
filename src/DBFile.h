@@ -17,7 +17,9 @@ private:
     File *file;
 
     Page *readPage, *writePage;
-    off_t readIndex, writeIndex;
+
+    // Pointer to the current read and write pages.
+    off_t readPtr, writePtr;
 
     void WriteToFile();
 

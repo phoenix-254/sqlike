@@ -32,6 +32,9 @@ public:
 
     // Clear page contents.
     void EmptyItOut();
+
+    // Returns the number of records this page is holding.
+    int GetNumberOfRecs();
 };
 
 #endif //SQLIKE_PAGE_H
