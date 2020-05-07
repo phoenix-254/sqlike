@@ -2,6 +2,7 @@
 #define SQLIKE_DBFILE_H
 
 #include "Comparison.h"
+#include "ComparisonEngine.h"
 #include "File.h"
 #include "Record.h"
 #include "Schema.h"
@@ -20,6 +21,8 @@ private:
 
     // Pointer to the current read and write pages.
     off_t readPtr, writePtr;
+
+    ComparisonEngine *comparisonEngine;
 
     void WriteToFile();
 

@@ -31,7 +31,7 @@ void ScanTest() {
         }
     }
 
-    cout << "Scanned " << counter << " number of records." << endl;
+    cout << "Scanned " << counter << " records." << endl;
 
     dbFile.Close();
 }
@@ -58,7 +58,7 @@ void ScanAndFilterTest() {
         }
     }
 
-    cout << "Scanned " << counter << " number of records." << endl;
+    cout << "Scanned " << counter << " records." << endl;
 
     dbFile.Close();
 }
