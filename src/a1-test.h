@@ -1,5 +1,5 @@
-#ifndef SQLIKE_TEST_H
-#define SQLIKE_TEST_H
+#ifndef SQLIKE_A1_TEST_H
+#define SQLIKE_A1_TEST_H
 
 #include <map>
 
@@ -68,4 +68,4 @@ void Cleanup() {
     relations.clear();
 }
 
-#endif //SQLIKE_TEST_H
+#endif //SQLIKE_A1_TEST_H

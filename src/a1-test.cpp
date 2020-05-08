@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include "DBFile.h"
-#include "test.h"
+#include "a1-test.h"
 
 Relation *rel;
 

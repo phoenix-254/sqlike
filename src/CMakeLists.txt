@@ -13,10 +13,12 @@ FLEX_TARGET(Scanner Scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 
 ADD_FLEX_BISON_DEPENDENCY(Scanner Parser)
 
-add_executable(sqlike-main main.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
+# a1 project
+add_executable(sqlike-main-a1 a1-main.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
         Page.cpp File.cpp DBFile.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
 
-add_executable(sqlike-test test.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
+# a1 project
+add_executable(sqlike-test-a1 a1-test.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
         Page.cpp File.cpp DBFile.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
 
 find_package(GTest REQUIRED)
