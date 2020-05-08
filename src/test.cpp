@@ -1,3 +1,4 @@
+#include "BigQ.h"
 #include "DBFile.h"
 #include "test.h"
 
@@ -101,7 +102,7 @@ void Test(int selectedOption, int runLength) {
     TestUtil testUtil = {&output, &sortOrder, selectedOption == 2, selectedOption == 3};
     pthread_create(&thread2, nullptr, Consumer, (void *)&testUtil);
 
-    //BigQ bq (input, output, sortorder, runlen);
+    BigQ bigQ(input, output, sortOrder, runLength);
 
     pthread_join(thread1, nullptr);
     pthread_join(thread2, nullptr);

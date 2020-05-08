@@ -23,7 +23,8 @@ add_executable(sqlike-test-a1 a1-test.cpp Schema.cpp Record.cpp Comparison.cpp C
 
 # a2.1 project
 add_executable(sqlike-test test.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
-        Page.cpp File.cpp DBFile.cpp Pipe.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
+        Page.cpp File.cpp BigQ.cpp DBFile.cpp Pipe.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
+target_link_libraries(sqlike-test pthread)
 
 find_package(GTest REQUIRED)
 add_executable(gtest GTest.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
