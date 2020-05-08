@@ -21,6 +21,10 @@ add_executable(sqlike-main-a1 a1-main.cpp Schema.cpp Record.cpp Comparison.cpp C
 add_executable(sqlike-test-a1 a1-test.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
         Page.cpp File.cpp DBFile.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
 
+# a2.1 project
+add_executable(sqlike-test test.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
+        Page.cpp File.cpp DBFile.cpp Pipe.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
+
 find_package(GTest REQUIRED)
 add_executable(gtest GTest.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
         Page.cpp File.cpp DBFile.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
