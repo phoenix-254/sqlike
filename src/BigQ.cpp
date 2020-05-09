@@ -11,13 +11,15 @@ void *Worker(void *bigQ) {
 }
 
 BigQ::BigQ(Pipe &input, Pipe &output, OrderMaker &sortOrder, int runLength) {
-    args->input = input;
-    args->output = output;
-    args->sortOrder = sortOrder;
-    args->runLength = runLength;
+    this->input = &input;
+    this->output = &output;
+    this->sortOrder = &sortOrder;
+    this->runLength = runLength;
 
     tempFile = new File();
     tempFile->Open(0, tempFileName);
+
+    comparisonEngine = new ComparisonEngine();
 
     pthread_t worker;
     pthread_create(&worker, nullptr, Worker, (void *) this);
@@ -25,7 +27,7 @@ BigQ::BigQ(Pipe &input, Pipe &output, OrderMaker &sortOrder, int runLength) {
 
 // Reads data from the input pipe and sort them into run-length pages.
 void BigQ::ExecuteSortPhase() {
-    int currentSize = 0, capacity = args->runLength * PAGE_SIZE;
+    int currentSize = 0, capacity = runLength * PAGE_SIZE;
 
     Page tempPage;
     off_t pageIndex = 1;
@@ -35,7 +37,7 @@ void BigQ::ExecuteSortPhase() {
 
     vector<Record*> records;
 
-    while (args->input.Remove(&tempRec)) {
+    while (input->Remove(&tempRec)) {
         copyRec = new Record();
         copyRec->Consume(&tempRec);
 
@@ -49,7 +51,7 @@ void BigQ::ExecuteSortPhase() {
         else {
             // Sort the current record list.
             sort(records.begin(), records.end(), [this](Record *left, Record *right) {
-                return comparisonEngine->Compare(left, right, &(args->sortOrder)) < 0;
+                return comparisonEngine->Compare(left, right, sortOrder) < 0;
             });
 
             // Write records to file using pages.
@@ -80,7 +82,7 @@ void BigQ::ExecuteSortPhase() {
     // Write off the last bunch of records which never exceeded capacity.
     // Sort the current record list.
     sort(records.begin(), records.end(), [this](Record *left, Record *right) {
-        return comparisonEngine->Compare(left, right, &(args->sortOrder)) < 0;
+        return comparisonEngine->Compare(left, right, sortOrder) < 0;
     });
 
     // Write records to file using pages.
@@ -106,10 +108,15 @@ void BigQ::ExecuteSortPhase() {
 
 // Construct priority queue over sorted runs and dump sorted data into the out pipe.
 void BigQ::ExecuteMergePhase() {
+
 }
 
 BigQ::~BigQ() {
-    delete args;
+    output->ShutDown();
+
+    delete input;
+    delete output;
+    delete sortOrder;
 
     tempFile->Close();
     delete tempFile;

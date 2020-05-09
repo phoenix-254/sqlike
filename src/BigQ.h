@@ -6,15 +6,11 @@
 #include "File.h"
 #include "Pipe.h"
 
-typedef struct {
-    Pipe &input, &output;
-    OrderMaker &sortOrder;
-    int runLength;
-} Args;
-
 class BigQ {
 private:
-    Args *args{};
+    Pipe *input, *output;
+    OrderMaker *sortOrder;
+    int runLength;
 
     File *tempFile;
     const char *tempFileName = "temp.bin";

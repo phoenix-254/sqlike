@@ -28,12 +28,12 @@ void *Producer(void *arg) {
     pipe->ShutDown();
 
     cout << "Producer : Successfully inserted " << count << " records into the pipe." << endl;
+
+    return nullptr;
 }
 
 void *Consumer(void *arg) {
     auto *t = (TestUtil *) arg;
-
-    ComparisonEngine comparisonEngine;
 
     DBFile dbFile;
     char outputFile[100];
@@ -43,15 +43,17 @@ void *Consumer(void *arg) {
     }
 
     Record recs[2];
-    Record *prev = nullptr, *last = nullptr;
+    Record *prev, *curr = nullptr;
+
+    ComparisonEngine comparisonEngine;
 
     int i = 0, err = 0;
     while (t->pipe->Remove(&recs[i % 2])) {
-        prev = last;
-        last = &recs[i % 2];
+        prev = curr;
+        curr = &recs[i % 2];
 
-        if (prev && last) {
-            if (comparisonEngine.Compare(prev, last, t->order) == 1) {
+        if (prev && curr) {
+            if (comparisonEngine.Compare(prev, curr, t->order) == 1) {
                 err++;
             }
 
@@ -61,7 +63,7 @@ void *Consumer(void *arg) {
         }
 
         if (t->print) {
-            if (last) last->Print(*(rel->GetSchema()));
+            if (curr) curr->Print(*(rel->GetSchema()));
         }
 
         i++;
@@ -70,7 +72,7 @@ void *Consumer(void *arg) {
     cout << "Consumer : removed " << i << " records from the pipe." << endl;
 
     if (t->write) {
-        if (last) dbFile.Add(*last);
+        if (curr) dbFile.Add(*curr);
         cerr << "Consumer : records removed written out as HEAP DBFile at " << outputFile << endl;
         dbFile.Close();
     }
@@ -80,6 +82,8 @@ void *Consumer(void *arg) {
     if (err) {
         cerr << "Consumer : " << err << " records failed sorted order test." << endl << endl;
     }
+
+    return nullptr;
 }
 
 void Test(int selectedOption, int runLength) {
