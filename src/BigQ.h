@@ -2,12 +2,34 @@
 #define SQLIKE_BIGQ_H
 
 #include "Comparison.h"
+#include "ComparisonEngine.h"
+#include "File.h"
 #include "Pipe.h"
 
+typedef struct {
+    Pipe &input, &output;
+    OrderMaker &sortOrder;
+    int runLength;
+} Args;
+
 class BigQ {
+private:
+    Args *args{};
+
+    File *tempFile;
+    const char *tempFileName = "temp.bin";
+
+    ComparisonEngine *comparisonEngine;
+
+    vector<off_t> runIndexes;
+
 public:
     BigQ(Pipe &input, Pipe &output, OrderMaker &sortOrder, int runLength);
     ~BigQ();
+
+    void ExecuteSortPhase();
+
+    void ExecuteMergePhase();
 };
 
 #endif //SQLIKE_BIGQ_H

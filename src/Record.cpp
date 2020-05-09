@@ -290,3 +290,7 @@ void Record::Print(Schema &schema) {
 
     cout << endl;
 }
+
+int Record::GetSize() {
+    return ((int*) bits)[0];
+}
