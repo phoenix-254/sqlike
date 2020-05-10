@@ -26,12 +26,13 @@ Note: All this configuration commands needs to be run on Ubuntu terminal. I have
 Run the following commands in order to run this project on your machine.
 - git clone `https://github.com/phoenix-254/sqlike.git`.
 - `cd sqlike/src/` - move to src folder.
-- `cmake -B../build -H.` - this will generate build folder with all the required files using `CMakeLists.txt` file in `src` folder.
+- `cmake -B../build -H.` - this will generate build folder with all the required files using `CMakeLists.txt` file in `src` folder. (from `src/` directory)
 - `cd ../build/` - move to build folder.
-- `cmake --build . --target sqlike-test` - compiles the code and generates an executable. 
+- `cmake --build . --target sqlike-test` - compiles the code and generates an executable. (from `build/` directory)
 
     The `sqlike-test` here is the name of the executable you want to generate, it can be `clean` or any other defined in your `CMakeLists`. e.g in order to clean we can use `cmake --build . --target clean`.
-- `./sqlike-test` - to run the code.
+- `./sqlike-test` - to run the code. (from `build/` directory)
+- `./run.sh` - to run the test script and generate `output1.txt`. (from `test-cases` directory) 
 
 Note: You must create empty `bin` folder with two sub-folders(`1gb` & `10mb`) inside the root folder as depicted in above directory structure prior to runnig this project. Also, you have to generate 1gb tbl files using [TPC-H dbgen](https://github.com/electrum/tpch-dbgen) yourself and put it in `files/1gb/` folder if you want to test against 1gb dataset.
 
@@ -48,6 +49,8 @@ Note: You must create empty `bin` folder with two sub-folders(`1gb` & `10mb`) in
 - ParseTree: Contains tree structure for the CNF.
 - Parser: Used to parse the CNF supplied by the user. This makes it possible for you to easily type CNF statements using the keyboard. This uses Bison library.
 - Scanner: Defines rules for how to scan and what action to take for each token given in input CNF by the user. This uses Flex library. Previously Lexer.l.
-- DBFile: A driver class that provides an interface for simply storing and retreiving records from the database.
+- DBFile: A driver class that provides an interface for simply storing and retrieving records from the database.
+- Pipe: This class works as a temporary buffer for all the records needed to be sorted. This works in conjunction with the Producer, Consumer, and BigQ Worker threads and helps in keeping synchronization among them.
+- BigQ: This class does the job of sorting all the records from the input pipe according to the given sort-order, and then writing them to the output pipe.
 
 Refer `docs/ProjectDescription.pdf` for more information.
