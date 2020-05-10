@@ -26,12 +26,12 @@ Note: All this configuration commands needs to be run on Ubuntu terminal. I have
 Run the following commands in order to run this project on your machine.
 - git clone `https://github.com/phoenix-254/sqlike.git`.
 - `cd sqlike/src/` - move to src folder.
-- `cmake -B../build -H.` - this will generate build folder with all the required files using `CMakeLists.txt` file in `src` folder.
+- `cmake -B../build -H.` - this will generate build folder with all the required files using `CMakeLists.txt` file in `src` folder. (from `src/` directory)
 - `cd ../build/` - move to build folder.
-- `cmake --build . --target sqlike-test` - compiles the code and generates an executable. 
+- `cmake --build . --target sqlike-test` - compiles the code and generates an executable. (from `build/` directory)
 
     The `sqlike-test` here is the name of the executable you want to generate, it can be `clean` or any other defined in your `CMakeLists`. e.g in order to clean we can use `cmake --build . --target clean`.
-- `./sqlike-test` - to run the code.
+- `./sqlike-test` - to run the code. (from `build/` directory)
 
 Note: You must create empty `bin` folder with two sub-folders(`1gb` & `10mb`) inside the root folder as depicted in above directory structure prior to runnig this project. Also, you have to generate 1gb tbl files using [TPC-H dbgen](https://github.com/electrum/tpch-dbgen) yourself and put it in `files/1gb/` folder if you want to test against 1gb dataset.
 
