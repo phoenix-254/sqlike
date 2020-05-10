@@ -6,6 +6,30 @@
 #include "File.h"
 #include "Pipe.h"
 
+class Run {
+private:
+    File *tempFilePtr;
+    Page *bufferPage;
+
+    // Pointer to current and end page for this run.
+    off_t currPageIndex, endPageIndex;
+
+public:
+    Record *currentRec;
+
+    Run(File *tempFile, off_t start, off_t end);
+
+    ~Run();
+
+    /*
+     * Updates the current parameter value to point to the current record in bufferPage and moves
+     * currentRec variable to point to the next record.
+     *
+     * Returns 1 for success and 0 for failure.
+     */
+    int Next(Record *current);
+};
+
 class BigQ {
 private:
     Pipe *input, *output;
