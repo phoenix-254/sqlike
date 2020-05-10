@@ -18,13 +18,13 @@ const char *CATALOG_FILE_PATH = "../files/catalog";
  * This directory contains the *.tbl files generated through tpch.
  * Change to "files/1gb" when you need to work with 1gb tbl files.
  */
-const char *TBL_FILES_PATH = "../files/10mb/";
+const char *TBL_FILES_PATH = "../files/1gb/";
 
 /*
  * This is the directory where you generated bin files should go to.
  * Change to "bin/1gb" when you need to work with 1gb bin files.
  */
-const char *BIN_FILES_PATH = "../bin/10mb/";
+const char *BIN_FILES_PATH = "../bin/1gb/";
 
 // Tables.
 const char *TBL_REGION = "region";
