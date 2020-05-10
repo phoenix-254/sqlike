@@ -12,6 +12,7 @@ COP6726 - Database System Implementation - Database From Scratch
         - 1gb/ - contains tbl files for 1gb dataset.
         - 10mb/ - contains tbl files for 10mb dataset. 
     - src/ - contains project source code.
+    - test-cases/ - contains test files and test script for the project.
    
 Note: The folders `bin`, `build`, and `files/1gb` has not been pushed to GitHub due to storage limitations.
 
