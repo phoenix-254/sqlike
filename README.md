@@ -48,6 +48,6 @@ Note: You must create empty `bin` folder with two sub-folders(`1gb` & `10mb`) in
 - ParseTree: Contains tree structure for the CNF.
 - Parser: Used to parse the CNF supplied by the user. This makes it possible for you to easily type CNF statements using the keyboard. This uses Bison library.
 - Scanner: Defines rules for how to scan and what action to take for each token given in input CNF by the user. This uses Flex library. Previously Lexer.l.
-- DBFile: A driver class that provides an interface for simply storing and retreiving records from the database.
+- DBFile: A driver class that provides an interface for simply storing and retrieving records from the database.
 
 Refer `docs/ProjectDescription.pdf` for more information.
