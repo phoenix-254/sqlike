@@ -1,12 +1,10 @@
-#ifndef SQLIKE_TEST_H
-#define SQLIKE_TEST_H
+#ifndef SQLIKE_A1_TEST_H
+#define SQLIKE_A1_TEST_H
 
-#include <iostream>
 #include <map>
 
 #include "Comparison.h"
 #include "Config.h"
-#include "Pipe.h"
 #include "Schema.h"
 
 using namespace std;
@@ -14,14 +12,6 @@ using namespace std;
 extern int yyparse();
 
 extern struct AndList *final;
-
-typedef struct {
-    Pipe *pipe;
-
-    OrderMaker *order;
-
-    bool print, write;
-} TestUtil;
 
 class Relation {
 private:
@@ -63,22 +53,6 @@ public:
         }
         cnf.GrowFromParseTree(final, *(GetSchema()), literal);
     }
-
-    void GetSortOrder(OrderMaker &orderMaker) {
-        cout << endl << ">>>> Specify sort ordering and press (ctrl+d) for EOF : " << endl;
-        if (yyparse() != 0) {
-            cout << "ERROR : Invalid expression" << endl;
-            exit(1);
-        }
-        cout << endl;
-
-        Record literal;
-        CNF cnf;
-        cnf.GrowFromParseTree(final, *(GetSchema()), literal); // constructs CNF predicate
-
-        OrderMaker dummy;
-        cnf.GetSortOrder(orderMaker, dummy);
-    }
 };
 
 
@@ -94,4 +68,4 @@ void Cleanup() {
     relations.clear();
 }
 
-#endif //SQLIKE_TEST_H
+#endif //SQLIKE_A1_TEST_H

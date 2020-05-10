@@ -91,6 +91,13 @@ Condition: Literal Op Literal
 	$$ = $2;
 	$$->left = $1;
 	$$->right = $3;
+}
+| Literal
+{
+	$$ = (struct ComparisonOp *) malloc (sizeof (struct ComparisonOp));
+	$$->code = EQUALS;
+	$$->left = $1;
+	$$->right = $1;
 };
 
 Op: '<' 

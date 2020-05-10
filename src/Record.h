@@ -60,6 +60,9 @@ public:
 
     // Prints the contents of the current record.
     void Print(Schema &schema);
+
+    // Returns the size of this record.
+    int GetSize();
 };
 
 #endif //SQLIKE_RECORD_H
