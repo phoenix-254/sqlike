@@ -1,19 +1,13 @@
-#ifndef SQLIKE_DBFILE_H
-#define SQLIKE_DBFILE_H
+#ifndef SQLIKE_SORTED_H
+#define SQLIKE_SORTED_H
 
-#include "Comparison.h"
 #include "GenericDBFile.h"
-#include "Record.h"
-#include "Schema.h"
 
-class DBFile {
-private:
-    GenericDBFile *file;
-
+class Sorted : public GenericDBFile {
 public:
-    DBFile();
+    Sorted();
 
-    ~DBFile();
+    ~Sorted();
 
     int Create(const char *filePath, fileType type, void *startUp);
 
@@ -32,4 +26,4 @@ public:
     int GetNext (Record &fetchMe, CNF &cnf, Record &literal);
 };
 
-#endif //SQLIKE_DBFILE_H
+#endif //SQLIKE_SORTED_H

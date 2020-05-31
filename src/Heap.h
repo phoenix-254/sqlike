@@ -1,19 +1,28 @@
-#ifndef SQLIKE_DBFILE_H
-#define SQLIKE_DBFILE_H
+#ifndef SQLIKE_HEAP_H
+#define SQLIKE_HEAP_H
 
 #include "Comparison.h"
+#include "ComparisonEngine.h"
+#include "File.h"
 #include "GenericDBFile.h"
-#include "Record.h"
-#include "Schema.h"
 
-class DBFile {
+class Heap : public GenericDBFile {
 private:
-    GenericDBFile *file;
+    File *file;
+
+    Page *readPage, *writePage;
+
+    // Pointer to the current read and write pages.
+    off_t readPtr, writePtr;
+
+    ComparisonEngine *comparisonEngine;
+
+    void WriteToFile();
 
 public:
-    DBFile();
+    Heap();
 
-    ~DBFile();
+    ~Heap();
 
     int Create(const char *filePath, fileType type, void *startUp);
 
@@ -32,4 +41,4 @@ public:
     int GetNext (Record &fetchMe, CNF &cnf, Record &literal);
 };
 
-#endif //SQLIKE_DBFILE_H
+#endif //SQLIKE_HEAP_H
