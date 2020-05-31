@@ -1,129 +1,142 @@
+#include <cmath>
+#include <string>
+#include <sstream>
+
 #include "BigQ.h"
 #include "DBFile.h"
 #include "test.h"
 
 Relation *rel;
 
-void *Producer(void *arg) {
-    Pipe *pipe = (Pipe *) arg;
+void Test1();
+void Test2();
+void Test3();
 
+int AddData(FILE *tblFileSrc, int numberOfRecs, int &res) {
     DBFile dbFile;
     dbFile.Open(rel->GetBinFilePath().c_str());
-    dbFile.MoveFirst();
-    cout << "Producer : Successfully opened DBFile " << rel->GetBinFilePath() << endl;
 
     Record temp;
-    int count = 0;
-    while (dbFile.GetNext(temp) == 1) {
-        count++;
-        if (count % 100000 == 0) {
-            cerr << "Producer : " << count << endl;
-        }
+    int processedRecs = 0, threshold = 20000;
+    while ((res = temp.SuckNextRecord(*(rel->GetSchema()), tblFileSrc) && ++processedRecs < numberOfRecs)) {
+        dbFile.Add(temp);
 
-        pipe->Insert(&temp);
+        if (processedRecs == threshold) cerr << "\t";
+        if (processedRecs % threshold == 0) cerr << ".";
     }
 
     dbFile.Close();
 
-    pipe->ShutDown();
-
-    cout << "Producer : Successfully inserted " << count << " records into the pipe." << endl;
-
-    return nullptr;
+    return processedRecs;
 }
 
-void *Consumer(void *arg) {
-    auto *t = (TestUtil *) arg;
+void Test1() {
+    int runLength = 0;
+    cout << ">>>> Specify run length: " << endl;
+    cin >> runLength;
 
-    DBFile dbFile;
-    char outputFile[100];
-    if (t->write) {
-        sprintf(outputFile, "%s.bigq", rel->GetBinFilePath().c_str());
-        dbFile.Create(outputFile, HEAP, nullptr);
+    // Determine how many records to add. (Moved this up since we cannot take
+    // user input after taking the sort-order and user inputs EOF.)
+    int option = 0;
+    while (option < 1 || option > 2) {
+        cout << ">>>> Select how many records to add in : " << rel->GetBinFilePath() << endl;
+        cout << "\t1. Add few records (1 to 1k)" << endl;
+        cout << "\t2. Add lots of records (1k to 1e+06)" << endl;
+
+        cin >> option;
+
+        if (option < 1 || option > 2)
+            cout << "Invalid choice, please try again!" << endl;
     }
 
-    Record recs[2];
-    Record *prev, *curr = nullptr;
-
-    ComparisonEngine comparisonEngine;
-
-    int i = 0, err = 0;
-    while (t->pipe->Remove(&recs[i % 2])) {
-        prev = curr;
-        curr = &recs[i % 2];
-
-        if (prev && curr) {
-            if (comparisonEngine.Compare(prev, curr, t->order) == 1) {
-                err++;
-            }
-
-            if (t->write) {
-                dbFile.Add(*prev);
-            }
-        }
-
-        if (t->print) {
-            if (curr) curr->Print(*(rel->GetSchema()));
-        }
-
-        i++;
-    }
-
-    cout << "Consumer : removed " << i << " records from the pipe." << endl;
-
-    if (t->write) {
-        if (curr) dbFile.Add(*curr);
-        cerr << "Consumer : records removed written out as HEAP DBFile at " << outputFile << endl;
-        dbFile.Close();
-    }
-
-    cerr << "Consumer : " << (i-err) << " records out of " << i << " records in sorted order." << endl;
-
-    if (err) {
-        cerr << "Consumer : " << err << " records failed sorted order test." << endl << endl;
-    }
-
-    return nullptr;
-}
-
-void Test(int selectedOption, int runLength) {
     // sort order for the records.
     OrderMaker sortOrder;
     rel->GetSortOrder(sortOrder);
 
-    // Pipe cache size
-    int bufferSize = 100;
+    cout << ">>>> Creating sorted db file : " << rel->GetBinFilePath() << endl;
+    struct { OrderMaker *sortOrder; int runLength; } startup = { &sortOrder, runLength };
+    DBFile dbFile;
+    dbFile.Create(rel->GetBinFilePath().c_str(), SORTED, &startup);
+    dbFile.Close();
 
-    Pipe input(bufferSize);
-    Pipe output(bufferSize);
+    cout << endl << ">>>> Reading from tbl file : " << rel->GetTblFilePath() << endl;
 
-    // thread to dump data into the input pipe (for BigQ's consumption)
-    pthread_t thread1;
-    pthread_create(&thread1, nullptr, Producer, (void *)&input);
+    FILE *tblFile = fopen(rel->GetTblFilePath().c_str(), "r");
+    srand48(time(nullptr));
 
-    // thread to read sorted data from output pipe (dumped by BigQ)
-    pthread_t thread2;
-    TestUtil testUtil = {&output, &sortOrder, selectedOption == 2, selectedOption == 3};
-    pthread_create(&thread2, nullptr, Consumer, (void *)&testUtil);
+    int totalRecs = 0, processedRecs = 1, res = 1;
+    while (processedRecs && res) {
+        processedRecs = AddData(tblFile, lrand48() % (int) pow(1e3, option) + (option - 1) * 1000, res);
+        totalRecs += processedRecs;
+        if (processedRecs) {
+            cout << "\n\tAdded " << processedRecs << " records. So far total is " << totalRecs << "." << endl;
+        }
+    }
 
-    BigQ bigQ(input, output, sortOrder, runLength);
+    fclose(tblFile);
 
-    pthread_join(thread1, nullptr);
-    pthread_join(thread2, nullptr);
+    cout << endl << "Create finished. Total " << totalRecs << " records inserted." << endl;
+}
+
+void Test2() {
+    cout << ">>>> Scanning a db file : " << rel->GetBinFilePath() << "\n";
+
+    DBFile dbFile;
+    dbFile.Open(rel->GetBinFilePath().c_str());
+    dbFile.MoveFirst();
+
+    Record temp;
+    int counter = 0;
+    while (dbFile.GetNext(temp) && ++counter) {
+        temp.Print(*(rel->GetSchema()));
+        if (counter % 10000 == 0) {
+            cerr << ".";
+        }
+    }
+
+    dbFile.Close();
+
+    cout << "Scanned " << counter << " records." << endl;
+}
+
+void Test3() {
+    CNF cnf{};
+    Record literal;
+    rel->GetCnf(cnf, literal);
+
+    cout << endl << ">>>> Scanning " << rel->GetRelationName() << " With Condition : ";
+    cnf.Print();
+
+    DBFile dbFile;
+    dbFile.Open(rel->GetBinFilePath().c_str());
+    dbFile.MoveFirst();
+
+    Record temp;
+    int counter = 0;
+    while (dbFile.GetNext(temp, cnf, literal) && ++counter) {
+        temp.Print(*(rel->GetSchema()));
+        if (counter % 10000 == 0) {
+            cerr << ".";
+        }
+    }
+
+    dbFile.Close();
+
+    cout << "Scanned " << counter << " records." << endl;
 }
 
 int main() {
     Setup();
 
-    int option = 0;
-    while (option < 1 || option > 3) {
+    int testToRun = 0;
+    while (testToRun < 1 || testToRun > 3) {
         cout << ">>>> Select Test: " << endl;
-        cout << "\t1. Sort" << endl;
-        cout << "\t2. Sort + Display" << endl;
-        cout << "\t3. Sort + Write" << endl;
+        cout << "\t1. Create a sorted db file" << endl;
+        cout << "\t2. Scan a db file" << endl;
+        cout << "\t3. Run a query" << endl;
 
-        cin >> option;
-        if (option < 1 || option > 3)
+        cin >> testToRun;
+        if (testToRun < 1 || testToRun > 3)
             cout << "Invalid choice, please try again!" << endl << endl;
     }
 
@@ -141,11 +154,13 @@ int main() {
 
     rel = relations.find(tableIndex)->second;
 
-    int runLength = 0;
-    cout << "Specify run length: " << endl;
-    cin >> runLength;
-
-    Test(option, runLength);
+    // Making array of all test functions above and calling appropriate function based on
+    // what user has selected.
+    void (*test) ();
+    void (*testPtr[]) () = {&Test1, &Test2, &Test3};
+    // As array index starts from 0, hence deducted 1.
+    test = testPtr[testToRun - 1];
+    test();
 
     Cleanup();
 }

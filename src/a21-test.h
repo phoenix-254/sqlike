@@ -1,5 +1,5 @@
-#ifndef SQLIKE_TEST_H
-#define SQLIKE_TEST_H
+#ifndef SQLIKE_A21_TEST_H
+#define SQLIKE_A21_TEST_H
 
 #include <iostream>
 #include <map>
@@ -65,7 +65,7 @@ public:
     }
 
     void GetSortOrder(OrderMaker &orderMaker) {
-        cout << ">>>> Specify sort ordering and press (ctrl+d) for EOF : " << endl;
+        cout << endl << ">>>> Specify sort ordering and press (ctrl+d) for EOF : " << endl;
         if (yyparse() != 0) {
             cout << "ERROR : Invalid expression" << endl;
             exit(1);
@@ -94,4 +94,4 @@ void Cleanup() {
     relations.clear();
 }
 
-#endif //SQLIKE_TEST_H
+#endif //SQLIKE_A21_TEST_H
