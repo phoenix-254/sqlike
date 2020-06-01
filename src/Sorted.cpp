@@ -198,7 +198,25 @@ void Sorted::Add(Record &addMe) {
 }
 
 int Sorted::GetNext(Record &fetchMe) {
+    Read();
     
+    /*
+     * Check if there are any records left to be read on the current readPage, and just update the
+     * fetchMe with the value of next record from this readPage.
+     * If not, update readPage to point to the next page in the file, and then update the value
+     * of fetchMe for this new readPage.
+     *
+     * Return 0 if reached the end of the file, else return 1.
+     */
+    if (!readPage->GetFirst(&fetchMe)) {
+        if (readPtr < file->GetLength() - 1) {
+            file->GetPage(readPage, readPtr++);
+            readPage->GetFirst(&fetchMe);
+        }
+        else
+            return 0;
+    }
+    return 1;
 }
 
 int Sorted::GetNext(Record &fetchMe, CNF &cnf, Record &literal) {
