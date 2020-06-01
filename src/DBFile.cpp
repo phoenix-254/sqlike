@@ -31,7 +31,7 @@ int DBFile::Create(const char *filePath, fileType type, void *startUp) {
         exit(1);
     }
 
-    return 1;
+    return file->Create(filePath, type, startUp);
 }
 
 int DBFile::Open(const char *filePath) {
@@ -52,7 +52,13 @@ int DBFile::Open(const char *filePath) {
             file = new Heap();
         }
         else if (strcmp(type.c_str(), FILE_TYPE_SORTED) == 0) {
-            file = new Sorted();
+            int runLen;
+            metaFile >> runLen;
+
+            OrderMaker *orderMaker;
+            metaFile.read((char*) &orderMaker, sizeof(orderMaker));
+
+            file = new Sorted(orderMaker, runLen);
         }
         else {
             cout << "Invalid file type value \"" << type << "\" stored in meta file." << endl;
@@ -66,7 +72,7 @@ int DBFile::Open(const char *filePath) {
         return 0;
     }
 
-    return 1;
+    return file->Open(filePath);
 }
 
 int DBFile::Close() {

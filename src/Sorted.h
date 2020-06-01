@@ -1,11 +1,44 @@
 #ifndef SQLIKE_SORTED_H
 #define SQLIKE_SORTED_H
 
+#include "BigQ.h"
 #include "GenericDBFile.h"
+#include "File.h"
 
 class Sorted : public GenericDBFile {
+private:
+    enum Mode {
+        READ,
+        WRITE
+    } mode;
+
+    File *file;
+    const char *fileLocation;
+
+    BigQ *bigQ;
+
+    Pipe *inputPipe, *outputPipe;
+
+    Page *readPage, *writePage;
+
+    // Pointer to the current read and write pages.
+    off_t readPtr, writePtr;
+
+    ComparisonEngine *comparisonEngine;
+
+    OrderMaker *sortOrder;
+    int runLength;
+
+    void Init();
+
+    void Read();
+    void Write();
+
+    void Merge();
+
 public:
     Sorted();
+    Sorted(OrderMaker *orderMaker, int runLength);
 
     ~Sorted();
 

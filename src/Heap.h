@@ -9,6 +9,7 @@
 class Heap : public GenericDBFile {
 private:
     File *file;
+    const char *filePath;
 
     Page *readPage, *writePage;
 

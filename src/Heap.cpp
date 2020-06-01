@@ -30,13 +30,26 @@ Heap::~Heap() {
 }
 
 int Heap::Create(const char *filePath, fileType type, void *startUp) {
-    if (filePath == nullptr || type < HEAP || type > TREE) return 0;
-
     // Reset read and write pointers.
     readPtr = writePtr = 0;
 
+    this->filePath = filePath;
+
     // Create bin file.
     file->Open(0, filePath);
+
+    return 1;
+}
+
+int Heap::Open(const char *filePath) {
+    // Opens bin file.
+    file->Open(1, filePath);
+    return 1;
+}
+
+int Heap::Close() {
+    // Write off the last page.
+    if (writePage->GetNumberOfRecs() > 0) WriteToFile();
 
     // Create meta file, and store the file-type into it.
     string metaFilePath(filePath);
@@ -50,20 +63,6 @@ int Heap::Create(const char *filePath, fileType type, void *startUp) {
     metaFile << FILE_TYPE_HEAP;
     metaFile.close();
 
-    return 1;
-}
-
-int Heap::Open(const char *filePath) {
-    if (filePath == nullptr) return 0;
-
-    // Opens bin file.
-    file->Open(1, filePath);
-    return 1;
-}
-
-int Heap::Close() {
-    // Write off the last page.
-    if (writePage->GetNumberOfRecs() > 0) WriteToFile();
     return file->Close();
 }
 
