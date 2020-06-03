@@ -118,6 +118,6 @@ void Page::EmptyItOut() {
     currSizeInBytes = sizeof(int);
 }
 
-int Page::GetNumberOfRecs() {
+int Page::GetNumberOfRecs() const {
     return numberOfRecs;
 }
