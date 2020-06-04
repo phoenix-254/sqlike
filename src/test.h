@@ -6,12 +6,15 @@
 
 #include "Comparison.h"
 #include "Config.h"
+#include "DBFile.h"
 #include "Pipe.h"
 #include "Schema.h"
 
 using namespace std;
 
 extern int yyparse();
+
+extern struct YY_BUFFER_STATE *yy_scan_string(const char*);
 
 extern struct AndList *final;
 
@@ -64,8 +67,12 @@ public:
         cnf.GrowFromParseTree(final, *(GetSchema()), literal);
     }
 
-    void GetSortOrder(OrderMaker &orderMaker) {
+    void GetSortOrder(CNF &cnf, OrderMaker &orderMaker) {
         cout << ">>>> Specify sort ordering and press (ctrl+d) for EOF : " << endl;
+
+        char *myCnf = "(c_name)";
+        yy_scan_string(myCnf);
+
         if (yyparse() != 0) {
             cout << "ERROR : Invalid expression" << endl;
             exit(1);
@@ -73,7 +80,6 @@ public:
         cout << endl;
 
         Record literal;
-        CNF cnf;
         cnf.GrowFromParseTree(final, *(GetSchema()), literal); // constructs CNF predicate
 
         OrderMaker dummy;

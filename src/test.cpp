@@ -2,8 +2,6 @@
 #include <string>
 #include <sstream>
 
-#include "BigQ.h"
-#include "DBFile.h"
 #include "test.h"
 
 Relation *rel;
@@ -21,6 +19,7 @@ int AddData(FILE *tblFileSrc, int numberOfRecs, int &res) {
     while ((res = temp.SuckNextRecord(*(rel->GetSchema()), tblFileSrc) && ++processedRecs < numberOfRecs)) {
         dbFile.Add(temp);
 
+        // In order to print "...." (loading indicator).
         if (processedRecs == threshold) cerr << "\t";
         if (processedRecs % threshold == 0) cerr << ".";
     }
@@ -50,10 +49,12 @@ void Test1() {
     }
 
     // sort order for the records.
+    CNF cnf{};
     OrderMaker sortOrder;
-    rel->GetSortOrder(sortOrder);
+    rel->GetSortOrder(cnf, sortOrder);
 
-    cout << ">>>> Creating sorted db file : " << rel->GetBinFilePath() << endl;
+    cout << ">>>> Creating sorted db file : " << rel->GetBinFilePath() << " with CNF : ";
+    cnf.Print();
     struct { OrderMaker *sortOrder; int runLength; } startup = { &sortOrder, runLength };
     DBFile dbFile;
     dbFile.Create(rel->GetBinFilePath().c_str(), SORTED, &startup);
@@ -66,8 +67,9 @@ void Test1() {
 
     int totalRecs = 0, processedRecs = 1, res = 1;
     while (processedRecs && res) {
-        processedRecs = AddData(tblFile, lrand48() % (int) pow(1e3, option) + (option - 1) * 1000, res);
+        processedRecs = AddData(tblFile,(int) lrand48() % (int) pow(1e3, option) + (option-1)*1000,res);
         totalRecs += processedRecs;
+
         if (processedRecs) {
             cout << "\n\tAdded " << processedRecs << " records. So far total is " << totalRecs << "." << endl;
         }
