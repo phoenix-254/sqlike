@@ -35,10 +35,8 @@ void Sorted::Merge() {
     }
 
     // File to hold merged records.
-    string mergedBinFilePath("../bin/1gb/");
-    mergedBinFilePath.append("merge.bin");
     Heap *mergedFile = new Heap();
-    mergedFile->Create(mergedBinFilePath.c_str(), HEAP, nullptr);
+    mergedFile->Create(tempMergeFileLocation.c_str(), HEAP, nullptr);
 
     auto *fileRecord = new Record();
     bool fileHasRecord = GetNext(*fileRecord);
@@ -78,7 +76,7 @@ void Sorted::Merge() {
 
     // Update pointer of current file to point to the newly merged file.
     remove(fileLocation.c_str());
-    rename(mergedBinFilePath.c_str(), fileLocation.c_str());
+    rename(tempMergeFileLocation.c_str(), fileLocation.c_str());
     file->Open(1, fileLocation.c_str());
 
     MoveFirst();
@@ -113,7 +111,11 @@ Sorted::~Sorted() {
 }
 
 int Sorted::Create(const char *filePath, fileType type, void *startUp) {
-    this->fileLocation = string(filePath);
+    fileLocation = string(filePath);
+
+    size_t index = fileLocation.find_last_of("/\\");
+    tempMergeFileLocation = fileLocation.substr(0, index + 1);
+    tempMergeFileLocation.append("merge.bin");
 
     // Parse startup arguments.
     typedef struct { OrderMaker *sortOrder; int runLength; } *Args;
@@ -145,7 +147,7 @@ int Sorted::Close() {
         exit(1);
     }
 
-    metaFile << FILE_TYPE_SORTED << "\n" << runLength;
+    metaFile << FILE_TYPE_SORTED << "\n" << runLength << "\n";
     metaFile.write((char *) &sortOrder, sizeof(sortOrder));
     metaFile.close();
 

@@ -13,7 +13,7 @@ private:
     } mode;
 
     File *file;
-    string fileLocation;
+    string fileLocation, tempMergeFileLocation;
 
     BigQ *bigQ;
 
