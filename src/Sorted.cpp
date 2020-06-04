@@ -131,7 +131,12 @@ int Sorted::Create(const char *filePath, fileType type, void *startUp) {
 
 int Sorted::Open(const char *filePath) {
     this->fileLocation = string(filePath);
-    file->Open(1, filePath);
+
+    size_t index = fileLocation.find_last_of("/\\");
+    tempMergeFileLocation = fileLocation.substr(0, index + 1);
+    tempMergeFileLocation.append("merge.bin");
+
+    file->Open(1, fileLocation.c_str());
     return 1;
 }
 
@@ -147,7 +152,7 @@ int Sorted::Close() {
         exit(1);
     }
 
-    metaFile << FILE_TYPE_SORTED << "\n" << runLength << "\n";
+    metaFile << FILE_TYPE_SORTED << "\n" << runLength;
     metaFile.write((char *) &sortOrder, sizeof(sortOrder));
     metaFile.close();
 

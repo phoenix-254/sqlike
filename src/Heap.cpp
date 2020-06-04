@@ -67,6 +67,9 @@ int Heap::Close() {
 }
 
 void Heap::CloseFile() {
+    // Write off the last page.
+    if (writePage->GetNumberOfRecs() > 0) WriteToFile();
+
     file->Close();
 }
 
