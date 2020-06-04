@@ -9,7 +9,7 @@
 class Heap : public GenericDBFile {
 private:
     File *file;
-    const char *filePath;
+    string fileLocation;
 
     Page *readPage, *writePage;
 
@@ -23,23 +23,25 @@ private:
 public:
     Heap();
 
-    ~Heap();
+    ~Heap() override;
 
-    int Create(const char *filePath, fileType type, void *startUp);
+    int Create(const char *filePath, fileType type, void *startUp) override;
 
-    int Open(const char *filePath);
+    int Open(const char *filePath) override;
 
-    int Close();
+    int Close() override;
 
-    void Load(Schema &schema, const char *loadPath);
+    void CloseFile();
 
-    void MoveFirst();
+    void Load(Schema &schema, const char *loadPath) override;
 
-    void Add(Record &addMe);
+    void MoveFirst() override;
 
-    int GetNext (Record &fetchMe);
+    void Add(Record &addMe) override;
 
-    int GetNext (Record &fetchMe, CNF &cnf, Record &literal);
+    int GetNext (Record &fetchMe) override;
+
+    int GetNext (Record &fetchMe, CNF &cnf, Record &literal) override;
 };
 
 #endif //SQLIKE_HEAP_H

@@ -33,7 +33,7 @@ int Heap::Create(const char *filePath, fileType type, void *startUp) {
     // Reset read and write pointers.
     readPtr = writePtr = 0;
 
-    this->filePath = filePath;
+    this->fileLocation = string(filePath);
 
     // Create bin file.
     file->Open(0, filePath);
@@ -52,7 +52,7 @@ int Heap::Close() {
     if (writePage->GetNumberOfRecs() > 0) WriteToFile();
 
     // Create meta file, and store the file-type into it.
-    string metaFilePath(filePath);
+    string metaFilePath(fileLocation);
     metaFilePath.append(".meta");
     ofstream metaFile;
     metaFile.open(metaFilePath.c_str());
@@ -64,6 +64,10 @@ int Heap::Close() {
     metaFile.close();
 
     return file->Close();
+}
+
+void Heap::CloseFile() {
+    file->Close();
 }
 
 void Heap::Load(Schema &schema, const char *loadPath) {

@@ -1,8 +1,6 @@
 #ifndef SQLIKE_GENERICDBFILE_H
 #define SQLIKE_GENERICDBFILE_H
 
-#include "DBFile.h"
-
 typedef enum {
     HEAP,
     SORTED,
