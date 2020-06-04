@@ -1,4 +1,3 @@
-#include "Config.h"
 #include "Heap.h"
 #include "Sorted.h"
 
@@ -6,6 +5,9 @@ void Sorted::Read() {
     if (mode != READ) {
         mode = READ;
         Merge();
+
+        delete inputPipe;delete outputPipe;delete bigQ;
+        inputPipe = nullptr, outputPipe = nullptr, bigQ = nullptr;
     }
 }
 
@@ -33,7 +35,7 @@ void Sorted::Merge() {
     }
 
     // File to hold merged records.
-    string mergedBinFilePath(BIN_FILES_PATH);
+    string mergedBinFilePath("../bin/1gb/");
     mergedBinFilePath.append("merge.bin");
     Heap *mergedFile = new Heap();
     mergedFile->Create(mergedBinFilePath.c_str(), HEAP, nullptr);
@@ -71,13 +73,13 @@ void Sorted::Merge() {
 
     outputPipe->ShutDown();
 
-    mergedFile->Close();
+    mergedFile->CloseFile();
     delete mergedFile;
 
     // Update pointer of current file to point to the newly merged file.
-    remove(fileLocation);
-    rename(mergedBinFilePath.c_str(), fileLocation);
-    file->Open(1, fileLocation);
+    remove(fileLocation.c_str());
+    rename(mergedBinFilePath.c_str(), fileLocation.c_str());
+    file->Open(1, fileLocation.c_str());
 
     MoveFirst();
 }
@@ -98,29 +100,20 @@ void Sorted::Init() {
 
     file = new File();
 
-    readPage = new Page();
-    writePage = new Page();
+    bufferedPage = new Page();
 
-    readPtr = writePtr = 0;
+    currentPagePtr = 0;
 
     comparisonEngine = new ComparisonEngine();
 }
 
 Sorted::~Sorted() {
-    delete inputPipe;
-    delete outputPipe;
-    delete bigQ;
-
     delete file;
-
-    delete readPage;
-    delete writePage;
-
     delete comparisonEngine;
 }
 
 int Sorted::Create(const char *filePath, fileType type, void *startUp) {
-    this->fileLocation = filePath;
+    this->fileLocation = string(filePath);
 
     // Parse startup arguments.
     typedef struct { OrderMaker *sortOrder; int runLength; } *Args;
@@ -135,7 +128,7 @@ int Sorted::Create(const char *filePath, fileType type, void *startUp) {
 }
 
 int Sorted::Open(const char *filePath) {
-    this->fileLocation = filePath;
+    this->fileLocation = string(filePath);
     file->Open(1, filePath);
     return 1;
 }
@@ -145,15 +138,19 @@ int Sorted::Close() {
     string metaFilePath(fileLocation);
     metaFilePath.append(".meta");
 
-    ofstream metaFile(metaFilePath);
+    ofstream metaFile;
+    metaFile.open(metaFilePath.c_str());
     if (!metaFile.is_open()) {
         cout << "ERROR : Unable to create meta file " << metaFilePath << endl;
         exit(1);
     }
 
-    metaFile << FILE_TYPE_SORTED << "\n" << runLength << "\n";
+    metaFile << FILE_TYPE_SORTED << "\n" << runLength;
     metaFile.write((char *) &sortOrder, sizeof(sortOrder));
     metaFile.close();
+
+    // Write off actual data.
+    Read();
 
     return file->Close();
 }
@@ -184,12 +181,11 @@ void Sorted::Load(Schema &schema, const char *loadPath) {
 void Sorted::MoveFirst() {
     Read();
 
-    readPtr = 0;
-    file->GetPage(readPage, readPtr++);
-
-    delete inputPipe;
-    delete outputPipe;
-    delete bigQ;
+    currentPagePtr = 0;
+    bufferedPage->EmptyItOut();
+    if (file->GetLength() > 0) {
+        file->GetPage(bufferedPage, currentPagePtr++);
+    }
 }
 
 void Sorted::Add(Record &addMe) {
@@ -199,7 +195,7 @@ void Sorted::Add(Record &addMe) {
 
 int Sorted::GetNext(Record &fetchMe) {
     Read();
-    
+
     /*
      * Check if there are any records left to be read on the current readPage, and just update the
      * fetchMe with the value of next record from this readPage.
@@ -208,10 +204,10 @@ int Sorted::GetNext(Record &fetchMe) {
      *
      * Return 0 if reached the end of the file, else return 1.
      */
-    if (!readPage->GetFirst(&fetchMe)) {
-        if (readPtr < file->GetLength() - 1) {
-            file->GetPage(readPage, readPtr++);
-            readPage->GetFirst(&fetchMe);
+    if (!bufferedPage->GetFirst(&fetchMe)) {
+        if (currentPagePtr < file->GetLength() - 1) {
+            file->GetPage(bufferedPage, currentPagePtr++);
+            bufferedPage->GetFirst(&fetchMe);
         }
         else
             return 0;

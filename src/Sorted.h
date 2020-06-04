@@ -13,16 +13,14 @@ private:
     } mode;
 
     File *file;
-    const char *fileLocation;
+    string fileLocation;
 
     BigQ *bigQ;
 
     Pipe *inputPipe, *outputPipe;
 
-    Page *readPage, *writePage;
-
-    // Pointer to the current read and write pages.
-    off_t readPtr, writePtr;
+    Page *bufferedPage;
+    off_t currentPagePtr;
 
     ComparisonEngine *comparisonEngine;
 
@@ -40,23 +38,23 @@ public:
     Sorted();
     Sorted(OrderMaker *orderMaker, int runLength);
 
-    ~Sorted();
+    ~Sorted() override;
 
-    int Create(const char *filePath, fileType type, void *startUp);
+    int Create(const char *filePath, fileType type, void *startUp) override;
 
-    int Open(const char *filePath);
+    int Open(const char *filePath) override;
 
-    int Close();
+    int Close() override;
 
-    void Load(Schema &schema, const char *loadPath);
+    void Load(Schema &schema, const char *loadPath) override;
 
-    void MoveFirst();
+    void MoveFirst() override;
 
-    void Add(Record &addMe);
+    void Add(Record &addMe) override;
 
-    int GetNext (Record &fetchMe);
+    int GetNext (Record &fetchMe) override;
 
-    int GetNext (Record &fetchMe, CNF &cnf, Record &literal);
+    int GetNext (Record &fetchMe, CNF &cnf, Record &literal) override;
 };
 
 #endif //SQLIKE_SORTED_H
