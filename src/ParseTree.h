@@ -13,7 +13,7 @@
 #define NAME 4
 
 struct Operand {
-    // this tells us the type of the operand: FLOAT, INT, STRING...
+    // Type of the operand: FLOAT, INT, STRING...
     int code;
 
     // this is the actual operand
@@ -46,6 +46,24 @@ struct AndList {
     // this is the AndList to the right of the AND
     // note that this can be NULL if the right is a disjunction
     struct AndList *rightAnd;
+};
+
+struct FuncOperand {
+    // Type of the operand: FLOAT, INT, STRING...
+    int code;
+
+    // this is the actual operand
+    char *value;
+};
+
+struct FuncOperator {
+    // The operator to use: '+', '-', ...
+    int code;
+
+    // The operators on the left and on the right
+    struct FuncOperator *leftOperator;
+    struct FuncOperand *leftOperand;
+    struct FuncOperator *right;
 };
 
 #endif //SQLIKE_PARSETREE_H
