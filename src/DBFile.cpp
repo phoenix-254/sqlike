@@ -45,23 +45,24 @@ int DBFile::Open(const char *filePath) {
     metaFile.open(metaFilePath.c_str());
 
     if (metaFile.is_open()) {
-        string type;
-        getline(metaFile, type);
+        string readLine;
+        getline(metaFile, readLine);
 
-        if (strcmp(type.c_str(), FILE_TYPE_HEAP) == 0) {
+        if (strcmp(readLine.c_str(), FILE_TYPE_HEAP) == 0) {
             file = new Heap();
         }
-        else if (strcmp(type.c_str(), FILE_TYPE_SORTED) == 0) {
-            int runLen;
-            metaFile >> runLen;
+        else if (strcmp(readLine.c_str(), FILE_TYPE_SORTED) == 0) {
+            getline(metaFile, readLine);
+            int runLen = stoi(readLine);
 
-            OrderMaker *orderMaker;
-            metaFile.read((char*) &orderMaker, sizeof(orderMaker));
+            getline(metaFile, readLine);
+            auto *orderMaker = new OrderMaker();
+            orderMaker->FromString(readLine);
 
             file = new Sorted(orderMaker, runLen);
         }
         else {
-            cout << "Invalid file type value \"" << type << "\" stored in meta file." << endl;
+            cout << "Invalid file type value \"" << readLine << "\" stored in meta file." << endl;
             exit(1);
         }
 

@@ -27,12 +27,24 @@ private:
     OrderMaker *sortOrder;
     int runLength;
 
+    // To be used in GetNext with CNF.
+    OrderMaker *queryOrder;
+    OrderMaker *cnfOrder;
+
     void Init();
 
     void Read();
     void Write();
 
     void Merge();
+
+    void BuildQueryOrder(CNF &cnf);
+
+    off_t BinarySearch(off_t low, off_t high, Record &literal);
+
+    int GetNextBinarySearch(Record &fetchMe, CNF &cnf, Record &literal, bool isCnfUpdated);
+
+    int GetNextLinearSearch(Record &fetchMe, CNF &cnf, Record &literal);
 
 public:
     Sorted();
@@ -52,9 +64,9 @@ public:
 
     void Add(Record &addMe) override;
 
-    int GetNext (Record &fetchMe) override;
+    int GetNext(Record &fetchMe) override;
 
-    int GetNext (Record &fetchMe, CNF &cnf, Record &literal) override;
+    int GetNext(Record &fetchMe, CNF &cnf, Record &literal) override;
 };
 
 #endif //SQLIKE_SORTED_H

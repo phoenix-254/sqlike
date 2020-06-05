@@ -14,8 +14,6 @@ using namespace std;
 
 extern int yyparse();
 
-extern struct YY_BUFFER_STATE *yy_scan_string(const char*);
-
 extern struct AndList *final;
 
 typedef struct {
@@ -60,6 +58,7 @@ public:
 
     void GetCnf(CNF &cnf, Record &literal) {
         cout << endl << ">>>> Enter in your CNF and press (ctrl+d) for EOF: " << endl;
+
         if (yyparse() != 0) {
             cout << "ERROR : Invalid expression" << endl;
             exit(1);
@@ -69,9 +68,6 @@ public:
 
     void GetSortOrder(CNF &cnf, OrderMaker &orderMaker) {
         cout << ">>>> Specify sort ordering and press (ctrl+d) for EOF : " << endl;
-
-        char *myCnf = "(c_name)";
-        yy_scan_string(myCnf);
 
         if (yyparse() != 0) {
             cout << "ERROR : Invalid expression" << endl;
@@ -86,7 +82,6 @@ public:
         cnf.GetSortOrder(orderMaker, dummy);
     }
 };
-
 
 map<int, Relation*> relations;
 

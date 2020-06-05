@@ -39,9 +39,9 @@ public:
 
     void Add(Record &addMe) override;
 
-    int GetNext (Record &fetchMe) override;
+    int GetNext(Record &fetchMe) override;
 
-    int GetNext (Record &fetchMe, CNF &cnf, Record &literal) override;
+    int GetNext(Record &fetchMe, CNF &cnf, Record &literal) override;
 };
 
 #endif //SQLIKE_HEAP_H

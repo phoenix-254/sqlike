@@ -98,7 +98,7 @@ void Test2() {
 
     dbFile.Close();
 
-    cout << "Scanned " << counter << " records." << endl;
+    cout << endl << "\tScanned " << counter << " records." << endl;
 }
 
 void Test3() {
@@ -124,7 +124,7 @@ void Test3() {
 
     dbFile.Close();
 
-    cout << "Scanned " << counter << " records." << endl;
+    cout << endl << "\tScanned " << counter << " records." << endl;
 }
 
 int main() {
