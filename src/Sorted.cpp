@@ -275,9 +275,6 @@ int Sorted::GetNext(Record &fetchMe) {
      */
     if (!bufferedPage->GetFirst(&fetchMe)) {
         if (currentPagePtr < file->GetLength() - 1) {
-            /*cout << "--------------" << endl;
-            cout << currentPagePtr << endl;
-            cout << "--------------" << endl;*/
             file->GetPage(bufferedPage, currentPagePtr++);
             bufferedPage->GetFirst(&fetchMe);
         }
@@ -332,7 +329,6 @@ int Sorted::GetNextBinarySearch(Record &fetchMe, CNF &cnf, Record &literal, bool
 }
 
 off_t Sorted::BinarySearch(off_t low, off_t high, Record &literal) {
-    cout << "BinarySearch - low : " << low << ", high : " << high << endl;
     // Base condition.
     if (low == high)
         return low;
@@ -369,4 +365,3 @@ int Sorted::GetNextLinearSearch(Record &fetchMe, CNF &cnf, Record &literal) {
         }
     }
 }
-
