@@ -25,7 +25,7 @@ target_link_libraries(sqlike-test-a1 pthread)
 
 # a2.1 project - test
 add_executable(sqlike-test-a21 a21-test.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
-        Page.cpp File.cpp BigQ.cpp BigQ.cpp DBFile.cpp Heap.cpp Sorted.cpp Pipe.cpp
+        Page.cpp File.cpp BigQ.cpp DBFile.cpp Heap.cpp Sorted.cpp Pipe.cpp
         ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
 target_link_libraries(sqlike-test-a21 pthread)
 
