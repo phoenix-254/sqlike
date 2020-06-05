@@ -2,7 +2,7 @@
 #include <string>
 #include <sstream>
 
-#include "test.h"
+#include "a22-test.h"
 
 Relation *rel;
 
