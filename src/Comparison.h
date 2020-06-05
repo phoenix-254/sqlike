@@ -8,6 +8,8 @@
 #include "Record.h"
 #include "Schema.h"
 
+using namespace std;
+
 class Comparison {
 public:
     int whichAttr1, whichAttr2;
@@ -41,6 +43,12 @@ public:
     explicit OrderMaker(Schema &schema);
 
     void Print();
+
+    // Converts this order-maker instance to string.
+    string ToString();
+
+    // Creates order-maker instance from string.
+    void FromString(string src);
 };
 
 class CNF {

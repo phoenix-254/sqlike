@@ -1,3 +1,4 @@
+#include <cstring>
 #include <iostream>
 
 #include "Comparison.h"
@@ -89,6 +90,46 @@ void OrderMaker::Print() {
         else if (whichTypes[index] == Double) cout << "\t" << "[Double]" << endl;
         else if (whichTypes[index] == String) cout << "\t" << "[String]" << endl;
     }
+}
+
+string OrderMaker::ToString() {
+    string res;
+    res += to_string(numberOfAttrs);
+    for (int i = 0; i < numberOfAttrs; i++) {
+        res += "," + to_string(whichAttrs[i]) + ":" + to_string(whichTypes[i]);
+    }
+    return res;
+}
+
+void OrderMaker::FromString(string src) {
+    string data;
+
+    int index = 0;
+    for (; index < src.size(); index++) {
+        if (src[index] == ',') {
+            index++;
+            break;
+        } else {
+            data += src[index];
+        }
+    }
+
+    this->numberOfAttrs = stoi(data);
+
+    data = "";
+    int attrIndex = 0;
+    for (; index < src.size(); index++) {
+        if (src[index] == ':') {
+            whichAttrs[attrIndex] = stoi(data);
+            data = "";
+        } else if (src[index] == ',') {
+            whichTypes[attrIndex++] = Type(stoi(data));
+            data = "";
+        } else {
+            data += src[index];
+        }
+    }
+    whichTypes[attrIndex] = Type(stoi(data));
 }
 
 int CNF::GetSortOrder(OrderMaker &left, OrderMaker &right) {
