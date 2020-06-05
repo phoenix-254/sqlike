@@ -51,6 +51,9 @@ Note: You must create empty `bin` folder with two sub-folders(`1gb` & `10mb`) in
 - Parser: Used to parse the CNF supplied by the user. This makes it possible for you to easily type CNF statements using the keyboard. This uses Bison library.
 - Scanner: Defines rules for how to scan and what action to take for each token given in input CNF by the user. This uses Flex library. Previously Lexer.l.
 - DBFile: A driver class that provides an interface for simply storing and retrieving records from the database.
+- GenericDBFile: A virtual base class that is used internally by `DBFile`, to implement either `Heap` or `Sorted` file functionality.
+- Heap: This class holds all the logic related to functions for DBFile of type `Heap`. This extends `GenericDBFile`.
+- Sorted: This class holds all the logic related to functions for DBFile of type `Sorted`. This extends `GenericDBFile`.
 - Pipe: This class works as a temporary buffer for all the records needed to be sorted. This works in conjunction with the Producer, Consumer, and BigQ Worker threads and helps in keeping synchronization among them.
 - BigQ: This class does the job of sorting all the records from the input pipe according to the given sort-order, and then writing them to the output pipe.
 
