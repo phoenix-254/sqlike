@@ -2,29 +2,13 @@
 #define SQLIKE_DBFILE_H
 
 #include "Comparison.h"
-#include "ComparisonEngine.h"
-#include "File.h"
+#include "GenericDBFile.h"
 #include "Record.h"
 #include "Schema.h"
 
-typedef enum {
-    HEAP,
-    SORTED,
-    TREE
-} fileType;
-
 class DBFile {
 private:
-    File *file;
-
-    Page *readPage, *writePage;
-
-    // Pointer to the current read and write pages.
-    off_t readPtr, writePtr;
-
-    ComparisonEngine *comparisonEngine;
-
-    void WriteToFile();
+    GenericDBFile *file;
 
 public:
     DBFile();

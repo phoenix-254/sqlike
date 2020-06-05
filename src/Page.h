@@ -34,7 +34,7 @@ public:
     void EmptyItOut();
 
     // Returns the number of records this page is holding.
-    int GetNumberOfRecs();
+    int GetNumberOfRecs() const;
 };
 
 #endif //SQLIKE_PAGE_H

@@ -24,4 +24,9 @@ enum Type {
     String
 };
 
+#define FILE_TYPE_HEAP "HEAP"
+#define FILE_TYPE_SORTED "SORTED"
+
+#define PIPE_BUFFER_SIZE 128
+
 #endif //SQLIKE_CONST_H

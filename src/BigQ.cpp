@@ -20,6 +20,7 @@ int Run::Next(Record *current) {
     current->Consume(currentRec);
     if (!bufferPage->GetFirst(currentRec)) {
         if (currPageIndex < endPageIndex) {
+            bufferPage->EmptyItOut();
             tempFilePtr->GetPage(bufferPage, currPageIndex++);
             bufferPage->GetFirst(currentRec);
         }
@@ -160,8 +161,6 @@ void BigQ::ExecuteMergePhase() {
         prev = index;
     }
 
-    tempFile->Close();
-
     Record tempRec;
     Run *tempRun;
     while (!PQ.empty()) {
@@ -181,6 +180,7 @@ void BigQ::ExecuteMergePhase() {
 
     output->ShutDown();
 
+    tempFile->Close();
     remove(tempFileName);
 }
 
