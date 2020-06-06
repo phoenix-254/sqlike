@@ -13,6 +13,16 @@
 
 int lineno = 1;
 void yyerror(char*s);
+
+static YY_BUFFER_STATE yylex_buf_state;
+
+void init_lexical_parser(char *src) {
+    yylex_buf_state = yy_scan_string(src);
+}
+
+void close_lexical_parser() {
+    yy_delete_buffer(yylex_buf_state);
+}
 %}
 
 /******************************************************************************

@@ -1,3 +1,5 @@
+%name-prefix="yyfunc"
+
 %{
 	#include "ParseTree.h"
 	#include <stdio.h>
@@ -127,4 +129,5 @@ Float
         $$->code = NAME;
         $$->value = $1;
 };
+
 %%

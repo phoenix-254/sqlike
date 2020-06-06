@@ -8,13 +8,21 @@ include_directories(${CMAKE_SOURCE_DIR})
 find_package(BISON REQUIRED)
 BISON_TARGET(Parser Parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
 
-find_package(BISON REQUIRED)
-BISON_TARGET(ParserFunc ParserFunc.y ${CMAKE_CURRENT_BINARY_DIR}/parser_func.cpp)
-
 find_package(FLEX REQUIRED)
 FLEX_TARGET(Scanner Scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 
 ADD_FLEX_BISON_DEPENDENCY(Scanner Parser)
+
+find_package(BISON REQUIRED)
+BISON_TARGET(ParserFunc ParserFunc.y ${CMAKE_CURRENT_BINARY_DIR}/parser_func.cpp)
+
+find_package(FLEX REQUIRED)
+FLEX_TARGET(ScannerFunc ScannerFunc.l ${CMAKE_CURRENT_BINARY_DIR}/scanner_func.cpp COMPILE_FLAGS "-Pyyfunc")
+
+ADD_FLEX_BISON_DEPENDENCY(ScannerFunc ParserFunc)
+
+add_executable(test temp.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
+        ${BISON_ParserFunc_OUTPUTS} ${FLEX_ScannerFunc_OUTPUTS})
 
 # a1 project - main
 add_executable(sqlike-main-a1 a1-main.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
