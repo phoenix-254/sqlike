@@ -8,6 +8,9 @@ include_directories(${CMAKE_SOURCE_DIR})
 find_package(BISON REQUIRED)
 BISON_TARGET(Parser Parser.y ${CMAKE_CURRENT_BINARY_DIR}/parser.cpp)
 
+find_package(BISON REQUIRED)
+BISON_TARGET(ParserFunc ParserFunc.y ${CMAKE_CURRENT_BINARY_DIR}/parser_func.cpp)
+
 find_package(FLEX REQUIRED)
 FLEX_TARGET(Scanner Scanner.l ${CMAKE_CURRENT_BINARY_DIR}/scanner.cpp)
 
