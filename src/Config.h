@@ -26,7 +26,11 @@ const char *TBL_FILES_PATH = "../files/1gb/";
  */
 const char *BIN_FILES_PATH = "../bin/1gb/";
 
-// Tables.
+// Tables indexes and names.
+const int TBL_REGION_INDEX = 1, TBL_NATION_INDEX = 2, TBL_PART_INDEX = 3,
+        TBL_SUPPLIER_INDEX = 4, TBL_PARTSUPP_INDEX = 5, TBL_CUSTOMER_INDEX = 6,
+        TBL_ORDERS_INDEX = 7, TBL_LINEITEM_INDEX = 8;
+
 const char *TBL_REGION = "region";
 const char *TBL_NATION = "nation";
 const char *TBL_PART = "part";
@@ -42,14 +46,14 @@ const char *TBL_LINEITEM = "lineitem";
  * e.g Gives table name as "part" directly when the user selects 3 from options menu.
  */
 const map<int, const char*> TABLE_MAP = {
-        {1, TBL_REGION},
-        {2, TBL_NATION},
-        {3, TBL_PART},
-        {4, TBL_SUPPLIER},
-        {5, TBL_PARTSUPP},
-        {6, TBL_CUSTOMER},
-        {7, TBL_ORDERS},
-        {8, TBL_LINEITEM}
+        {TBL_REGION_INDEX, TBL_REGION},
+        {TBL_NATION_INDEX, TBL_NATION},
+        {TBL_PART_INDEX, TBL_PART},
+        {TBL_SUPPLIER_INDEX, TBL_SUPPLIER},
+        {TBL_PARTSUPP_INDEX, TBL_PARTSUPP},
+        {TBL_CUSTOMER_INDEX, TBL_CUSTOMER},
+        {TBL_ORDERS_INDEX, TBL_ORDERS},
+        {TBL_LINEITEM_INDEX, TBL_LINEITEM}
     };
 
 #endif //SQLIKE_CONFIG_H
