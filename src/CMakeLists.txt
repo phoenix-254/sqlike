@@ -21,9 +21,6 @@ FLEX_TARGET(ScannerFunc ScannerFunc.l ${CMAKE_CURRENT_BINARY_DIR}/scanner_func.c
 
 ADD_FLEX_BISON_DEPENDENCY(ScannerFunc ParserFunc)
 
-add_executable(test temp.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
-        ${BISON_ParserFunc_OUTPUTS} ${FLEX_ScannerFunc_OUTPUTS})
-
 # a1 project - main
 add_executable(sqlike-main-a1 a1-main.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
         Page.cpp File.cpp DBFile.cpp ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
@@ -45,6 +42,13 @@ add_executable(sqlike-test-a22 a22-test.cpp Schema.cpp Record.cpp Comparison.cpp
         Page.cpp File.cpp BigQ.cpp DBFile.cpp Heap.cpp Sorted.cpp Pipe.cpp
         ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS})
 target_link_libraries(sqlike-test-a22 pthread)
+
+# a3 project - test
+add_executable(sqlike-test test.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
+        Page.cpp File.cpp BigQ.cpp DBFile.cpp Heap.cpp Sorted.cpp Pipe.cpp Function.cpp RelationalOp.cpp
+        ${BISON_Parser_OUTPUTS} ${FLEX_Scanner_OUTPUTS}
+        ${BISON_ParserFunc_OUTPUTS} ${FLEX_ScannerFunc_OUTPUTS})
+target_link_libraries(sqlike-test pthread)
 
 find_package(GTest REQUIRED)
 add_executable(gtest GTest.cpp Schema.cpp Record.cpp Comparison.cpp ComparisonEngine.cpp
