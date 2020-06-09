@@ -67,6 +67,16 @@ Schema::Schema(const string& fileName, const string& relationName) {
     }
 }
 
+Schema::Schema(const string &fileName, int numAttrs, Attribute *attrs) {
+    this->fileName = fileName;
+    for (int i = 0; i < numAttrs; i++) {
+        Attribute attr;
+        attr.name = attrs[i].name;
+        attr.type = attrs[i].type;
+        this->attrs.push_back(attr);
+    }
+}
+
 Schema::~Schema() {
     attrs.clear();
 }

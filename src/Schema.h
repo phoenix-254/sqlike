@@ -25,6 +25,8 @@ private:
 public:
     Schema(const string& fileName, const string& relationName);
 
+    Schema(const string& fileName, int numAttrs, Attribute *attrs);
+
     ~Schema();
 
     int FindIndex(const string& attrName);
