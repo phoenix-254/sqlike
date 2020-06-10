@@ -1,3 +1,4 @@
+#include "ComparisonEngine.h"
 #include "RelationalOp.h"
 
 void RelationalOp::WaitUntilDone() const {
@@ -35,8 +36,29 @@ void SelectPipe::Run(Pipe &inputPipe, Pipe &outputPipe, CNF &selectionOp, Record
 
 }
 
-void Project::Run(Pipe &inputPipe, Pipe &outputPipe, int *attrsToKeep, int inputAttrCount, int outputAttrCount) {
+void *ProjectExecute(void *args) {
+    auto *myArgs = (ProjectArgs*) args;
 
+    Record temp;
+    while (myArgs->inputPipe->Remove(&temp)) {
+        temp.Project(myArgs->attrsToKeep, myArgs->outputAttrCount, myArgs->inputAttrCount);
+        myArgs->outputPipe->Insert(&temp);
+    }
+
+    myArgs->outputPipe->ShutDown();
+
+    return nullptr;
+}
+
+void Project::Run(Pipe &inputPipe, Pipe &outputPipe, int *attrsToKeep, int inputAttrCount, int outputAttrCount) {
+    auto *args = new ProjectArgs();
+    args->inputPipe = &inputPipe;
+    args->outputPipe = &outputPipe;
+    args->attrsToKeep = attrsToKeep;
+    args->inputAttrCount = inputAttrCount;
+    args->outputAttrCount = outputAttrCount;
+
+    pthread_create(&thread, nullptr, ProjectExecute, (void *) args);
 }
 
 void Join::Run(Pipe &inputPipeLeft, Pipe &inputPipeRight, Pipe &outputPipe, CNF &selectionOp, Record &literal) {

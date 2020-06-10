@@ -540,7 +540,7 @@ void CNF::Print() {
             orList[i][j].PrintStr();
             if (j < orLens[i] - 1) cout << " OR ";
         }
-        cout << ") ";
+        cout << ")";
 
         if (i < numberOfAnds - 1) cout << " AND ";
         else cout << endl;

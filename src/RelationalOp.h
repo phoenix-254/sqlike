@@ -38,6 +38,15 @@ public:
     void Run(Pipe &inputPipe, Pipe &outputPipe, CNF &selectionOp, Record &literal);
 };
 
+struct ProjectArgs {
+    Pipe *inputPipe, *outputPipe;
+
+    int *attrsToKeep;
+    int inputAttrCount, outputAttrCount;
+};
+
+void *ProjectExecute(void *args);
+
 class Project : public RelationalOp {
 public:
     void Run(Pipe &inputPipe, Pipe &outputPipe, int *attrsToKeep, int inputAttrCount, int outputAttrCount);
