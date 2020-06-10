@@ -69,8 +69,39 @@ void DuplicateRemoval::Run(Pipe &inputPipe, Pipe &outputPipe, Schema &schema) {
 
 }
 
-void Sum::Run(Pipe &inputPipe, Pipe &outputPipe, Function &computeMe) {
+void *SumExecute(void *args) {
+    auto *myArgs = (SumArgs*) args;
 
+    double sum = 0;
+
+    int intVal = 0;
+    double doubleVal = 0;
+
+    Record temp;
+    while (myArgs->inputPipe->Remove(&temp)) {
+        intVal = 0; doubleVal = 0;
+
+        myArgs->function->Apply(temp, intVal, doubleVal);
+        sum += (intVal + doubleVal);
+    }
+
+    Attribute attr = {"sum", Double};
+    Schema sumSchema("sumSchema", 1, &attr);
+    temp.ComposeRecord(sumSchema, (std::to_string(sum) + "|").c_str());
+
+    myArgs->outputPipe->Insert(&temp);
+    myArgs->outputPipe->ShutDown();
+
+    return nullptr;
+}
+
+void Sum::Run(Pipe &inputPipe, Pipe &outputPipe, Function &computeMe) {
+    auto *args = new SumArgs();
+    args->inputPipe = &inputPipe;
+    args->outputPipe = &outputPipe;
+    args->function = &computeMe;
+
+    pthread_create(&thread, nullptr, SumExecute, (void *) args);
 }
 
 void GroupBy::Run(Pipe &inputPipe, Pipe &outputPipe, OrderMaker &groupAttrs, Function &computeMe) {

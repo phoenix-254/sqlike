@@ -62,6 +62,13 @@ public:
     void Run(Pipe &inputPipe, Pipe &outputPipe, Schema &schema);
 };
 
+struct SumArgs {
+    Pipe *inputPipe, *outputPipe;
+    Function *function;
+};
+
+void *SumExecute(void *args);
+
 class Sum : public RelationalOp {
 public:
     void Run(Pipe &inputPipe, Pipe &outputPipe, Function &computeMe);

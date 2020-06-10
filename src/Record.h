@@ -44,6 +44,11 @@ public:
     int SuckNextRecord(Schema &schema, FILE *file);
 
     /*
+     * Reads the record from a given text. Similar to SuckNextRecord.
+     */
+    int ComposeRecord(Schema &schema, const char *src);
+
+    /*
      * Project away various attributes.
      * attrIndexesToKeep - sorted array of all the attributes to keep
      * numAttrsToKeep - number of attributes to keep
