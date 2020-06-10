@@ -28,6 +28,13 @@ int numAttrsPart = 9, numAttrsSupp = 7, numAttrsPartSupp = 5;
 
 SelectFile selFilePart, selFileSupp, selFilePartSupp;
 
+/*
+ * IMPORTANT
+ * It is assumed that the .bin and .bin.meta files has already been created for this project milestone.
+ *
+ * Make sure that the bin folder contains the required bin and meta files for the following tables.
+ * If not, generate the files using Project 1 - Load File feature. (sqlike-test-a1)
+ */
 DBFile dbFilePart, dbFileSupp, dbFilePartSupp;
 
 Pipe pipePart(pipeSize), pipeSupp(pipeSize), pipePartSupp(pipeSize);
@@ -37,25 +44,28 @@ CNF cnfPart, cnfSupp, cnfPartSupp;
 Record litPart, litSupp, litPartSupp;
 
 void initSelFilePart(char *cnf, int numPages) {
-    dbFilePart.Open(relations.find(TBL_PART_INDEX)->second->GetBinFilePath().c_str());
-    GetCnf(cnf, *(relations.find(TBL_PART_INDEX)->second->GetSchema()), cnfPart, litPart);
+    Relation *rel = relations.find(TBL_PART_INDEX)->second;
+    dbFilePart.Open(rel->GetBinFilePath().c_str());
+    GetCnf(cnf, *(rel->GetSchema()), cnfPart, litPart);
     selFilePart.Use_n_Pages(numPages);
 }
 
 void initSelFileSupplier(char *cnf, int numPages) {
-    dbFileSupp.Open(relations.find(TBL_SUPPLIER_INDEX)->second->GetBinFilePath().c_str());
-    GetCnf(cnf, *(relations.find(TBL_SUPPLIER_INDEX)->second->GetSchema()), cnfSupp, litSupp);
+    Relation *rel = relations.find(TBL_SUPPLIER_INDEX)->second;
+    dbFileSupp.Open(rel->GetBinFilePath().c_str());
+    GetCnf(cnf, *(rel->GetSchema()), cnfSupp, litSupp);
     selFileSupp.Use_n_Pages(numPages);
 }
 
 void initSelFilePartSupp(char *cnf, int numPages) {
-    dbFilePartSupp.Open(relations.find(TBL_PARTSUPP_INDEX)->second->GetBinFilePath().c_str());
-    GetCnf(cnf, *(relations.find(TBL_PARTSUPP_INDEX)->second->GetSchema()), cnfPartSupp, litPartSupp);
+    Relation *rel = relations.find(TBL_PARTSUPP_INDEX)->second;
+    dbFilePartSupp.Open(rel->GetBinFilePath().c_str());
+    GetCnf(cnf, *(rel->GetSchema()), cnfPartSupp, litPartSupp);
     selFilePartSupp.Use_n_Pages(numPages);
 }
 
 // select * from partsupp where ps_supplycost < 1.03
-// expected output: 31 records
+// expected output: 21 records
 void Query1() {
     cout << ">>>> Running Query 1" << endl;
     char *cnfInput = "(ps_supplycost < 1.03)";
@@ -64,7 +74,7 @@ void Query1() {
     selFilePartSupp.Run(dbFilePartSupp, pipePartSupp, cnfPartSupp, litPartSupp);
     selFilePartSupp.WaitUntilDone();
 
-    int numRecs = ClearPipe(pipePartSupp, *(relations.find(5)->second->GetSchema()), true);
+    int numRecs = ClearPipe(pipePartSupp, *(relations.find(TBL_PARTSUPP_INDEX)->second->GetSchema()), true);
     cout << endl << ">>>> Query 1 returned " << numRecs << " records." << endl;
 
     dbFilePartSupp.Close();
@@ -239,7 +249,7 @@ void Query6() {
     Schema joinSchema("joinSchema", numAttrsOut, joinAttr);
 
     GroupBy groupBy;
-    Pipe out(1);
+    Pipe out(pipeSize);
     Function func;
     char *cnfInput4 = "(ps_supplycost)";
     GetCnf(cnfInput4, joinSchema, func);

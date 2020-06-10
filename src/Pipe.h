@@ -22,6 +22,8 @@ private:
     pthread_cond_t consumerVar;
 
 public:
+    Pipe() = default;
+
     /*
      * Sets up the pipeline
      * bufferSize = number of records to buffer
