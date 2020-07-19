@@ -202,10 +202,18 @@ void LoadRecordsFromPageBlock(vector<Record*> *recs, Page *pageBlock, int blockL
 }
 
 void JoinRecords(vector<Record*> *leftRecs, vector<Record*> *rightRecs, Pipe *output) {
+    int numAttrsLeft = (*leftRecs)[0]->GetAttrCount(), numAttrsRight = (*rightRecs)[0]->GetAttrCount();
+    int numAttrsTotal = numAttrsLeft + numAttrsRight;
+
+    int *attrsToKeep = new int[numAttrsTotal];
+    for (int i = 0; i < numAttrsLeft; i++) attrsToKeep[i] = i;
+    for (int i = 0; i < numAttrsRight; i++) attrsToKeep[numAttrsLeft + i] = i;
+
     auto *mergedRec = new Record();
     for (auto *leftRec : *leftRecs) {
         for (auto *rightRec : *rightRecs) {
-            mergedRec->MergeRecords(leftRec, rightRec);
+            mergedRec->MergeRecords(leftRec, rightRec, numAttrsLeft, numAttrsRight,
+                                    attrsToKeep, numAttrsTotal, numAttrsLeft);
             output->Insert(mergedRec);
         }
     }

@@ -71,7 +71,6 @@ void *JoinExecute(void *args);
 void PerformSortMergeJoin(Pipe *leftInputPipe, Pipe *rightInputPipe, Pipe *outputPipe,
                           OrderMaker *leftOrderMaker, OrderMaker *rightOrderMaker);
 void PerformBlockNestedLoopsJoin(Pipe *leftInputPipe, Pipe *rightInputPipe, Pipe *outputPipe, int runLength);
-void LoadRecordsFromPageBlock(vector<Record*> *recs, Page *pageBlock, int blockLen);
 
 class Join : public RelationalOp {
 public:
