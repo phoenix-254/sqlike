@@ -26,9 +26,9 @@ public:
 
     virtual void Add(Record &addMe) = 0;
 
-    virtual int GetNext (Record &fetchMe) = 0;
+    virtual int GetNext(Record &fetchMe) = 0;
 
-    virtual int GetNext (Record &fetchMe, CNF &cnf, Record &literal) = 0;
+    virtual int GetNext(Record &fetchMe, CNF &cnf, Record &literal) = 0;
 };
 
 #endif //SQLIKE_GENERICDBFILE_H

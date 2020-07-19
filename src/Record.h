@@ -68,6 +68,9 @@ public:
 
     // Returns the size of this record.
     int GetSize();
+
+    // Returns the number of attributes for the record.
+    int GetAttrCount();
 };
 
 #endif //SQLIKE_RECORD_H

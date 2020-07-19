@@ -81,7 +81,7 @@ void Query1() {
 }
 
 // select p_partkey(0), p_name(1), p_retailprice(7) from part where (p_retailprice > 931.01) AND (p_retailprice < 931.3);
-// expected output: 22 records
+// expected output: 12 records
 void Query2() {
     cout << ">>>> Running Query 2" << endl;
     char *cnfInput = "(p_retailprice > 931.01) AND (p_retailprice < 931.3)";
@@ -274,7 +274,8 @@ void Query6() {
 
 int main (int argc, char *argv[]) {
     if (argc != 2) {
-        cout << "Error: Please provide an argument. Example usage: \"./sqlike-test 1\" where 1 means run query 1." << endl;
+        cout << "Error: Please provide an argument value between 1 to 6."
+                " Example usage: \"./sqlike-test 1\" where 1 means run query 1." << endl;
         exit(0);
     }
 

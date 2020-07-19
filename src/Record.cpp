@@ -376,3 +376,8 @@ void Record::Print(Schema &schema) {
 int Record::GetSize() {
     return ((int*) bits)[0];
 }
+
+int Record::GetAttrCount() {
+    if (bits == nullptr) return 0;
+    return ((int *) bits)[1] / sizeof(int) - 1;
+}

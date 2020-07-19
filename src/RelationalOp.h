@@ -33,6 +33,14 @@ public:
     void Run(DBFile &inputFile, Pipe &outputPipe, CNF &selectionOp, Record &literal);
 };
 
+struct SelectPipeArgs {
+    Pipe *inputPipe, *outputPipe;
+    CNF *selectionOp;
+    Record *literal;
+};
+
+void *SelectPipeExecute(void *args);
+
 class SelectPipe : public RelationalOp {
 public:
     void Run(Pipe &inputPipe, Pipe &outputPipe, CNF &selectionOp, Record &literal);
@@ -52,10 +60,30 @@ public:
     void Run(Pipe &inputPipe, Pipe &outputPipe, int *attrsToKeep, int inputAttrCount, int outputAttrCount);
 };
 
+struct JoinArgs {
+    Pipe *inputPipeLeft, *inputPipeRight, *outputPipe;
+    CNF *selectionOp;
+    Record *literal;
+    int runLength;
+};
+
+void *JoinExecute(void *args);
+void PerformSortMergeJoin(Pipe *leftInputPipe, Pipe *rightInputPipe, Pipe *outputPipe,
+                          OrderMaker *leftOrderMaker, OrderMaker *rightOrderMaker);
+void PerformBlockNestedLoopsJoin(Pipe *leftInputPipe, Pipe *rightInputPipe, Pipe *outputPipe, int runLength);
+void LoadRecordsFromPageBlock(vector<Record*> *recs, Page *pageBlock, int blockLen);
+
 class Join : public RelationalOp {
 public:
     void Run(Pipe &inputPipeLeft, Pipe &inputPipeRight, Pipe &outputPipe, CNF &selectionOp, Record &literal);
 };
+
+struct DuplicateRemovalArgs {
+    Pipe *inputPipe, *outputPipe;
+    Schema *schema;
+};
+
+void *DuplicateRemovalExecute(void *args);
 
 class DuplicateRemoval : public RelationalOp {
 public:
